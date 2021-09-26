@@ -55,7 +55,7 @@ The second is to use special replacement characters as described in this chart:
 | sampleText (camel case) | sample-text (kebab case) |
 
 ```js
-chic.background.#c0c0c0.borderRadius._0_5rem('Rounded corners on silver background');
+chic.background.$c0c0c0.borderRadius._0_5rem('Rounded corners on silver background');
 ```
 
 ### Configuration Object syntax
