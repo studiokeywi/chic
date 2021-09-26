@@ -1,0 +1,14 @@
+{
+  "name": "@studiokeywi/chic",
+  "version": "0.0.1",
+  "description": "Browser console.log CSS helper",
+  "keywords": [],
+  "author": "studioKeywi <dev@studiokeywi.dev> (https://studiokeywi.dev)",
+  "license": "MIT",
+  "type": "module",
+  "browser": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "github:studiokeywi/chic"
+  }
+}
