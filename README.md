@@ -53,9 +53,12 @@ The second is to use special replacement characters as described in this chart:
 | \_ (at start of string) | (empty string)           |
 | \_ (in between digits)  | .                        |
 | sampleText (camel case) | sample-text (kebab case) |
+| \_ (other positioning)  | ' ' (single space)       |
 
 ```js
-chic.background.$c0c0c0.borderRadius._0_5rem('Rounded corners on silver background');
+chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue(
+  'Rounded corners on silver background with a thin solid blue border'
+);
 ```
 
 ### Configuration Object syntax
