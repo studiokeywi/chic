@@ -13,8 +13,8 @@ const format = str =>
 const values = ([prop, val]) => `${prop}:${val};`;
 const regexps = { hex: /\$/g, kebab: /(?=[A-Z])/, lead: /(^_)/, number: /(\d+)_(\d+)/g, snake: /_/g };
 const handler = {
-  make: ({ multi = false } = {}) =>
-    new Proxy(console.log, { ...{ batch: [], single: [], fixed: [] }, multi, ...handler }),
+  make: ({ multi = false, level = 'log' } = {}) =>
+    new Proxy(console[level], { ...{ batch: [], single: [], fixed: [] }, multi, ...handler }),
   clear() {
     this.batch.splice(0, this.batch.length);
     this.single.splice(0, this.single.length);
