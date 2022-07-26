@@ -33,16 +33,13 @@ import chic from '@studiokeywi/chic';
 
 ## API
 
-chic has two main modes for usage -- chainable and object configuration. Below are some examples showing both the syntax as well as the output:
-
-![](./examples-single.png)
-
-### Chainable syntax
+### Chainable CSS syntax
 
 Behind the scenes, chic uses a JavaScript Proxy object to transform property values into CSS-friendly strings. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access:
 
 ```js
-chic.background['#c0c0c0']['border-radius']['0.5rem']('Rounded corners on silver background');
+chic.background['#c0c0c0']['border-radius']['0.5rem']();
+// returns 'background:#c0c0c0;border-radius:0.5rem'
 ```
 
 The second is to use special replacement characters as described in this chart:
@@ -56,27 +53,27 @@ The second is to use special replacement characters as described in this chart:
 | \_ (other positioning)  | ' ' (single space)       |
 
 ```js
-chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue(
-  'Rounded corners on silver background with a thin solid blue border'
-);
+chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue();
+// returns 'background:#c0c0c0;border-radius:0.5rem;border:0.125rem solid blue'
 ```
 
-### Configuration Object syntax
+### CSS Tagged Template Literal Logging
 
-You can also pass in an object whose properties and values will become mapped into CSS strings:
+chic wraps around the styleable logging methods provided by the `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
 
 ```js
-chic('Rounded corners on silver background', { background: '#c0c0c0', ['border-radius']: '0.5rem' });
+chic.log`Hello World${chic.background.black.color.white()}`;
 ```
 
-### Style fixing
+Each section of text can receive it's own styling by providing the style string directly afterwards in the template:
 
-As seen in the screenshot above, repeated use of chic will clear styles in between usage, but sometimes you may want to build up a portion of styling that will always apply. This can be done with a combination of the `.make()` and `.fix()` functions. `.make()` will return a new instance of chic (and it is **strongly recommended** that you `.make()` a new instance before using `.fix()` to prevent styling from being applied to the default chic instance, unless that is your intent). `.fix()` saves any currently pending styles separately from any currently pending styles and supports taking in an configuration object to apply additional styles:
+```js
+chic.log`Hello${chic.color.red()} World${chic.color.blue()}`;
+```
 
-![](./examples-fixed.png)
+Templates without interpolated style strings will be unstyled, as will any text that follows the final style string in a template:
 
-### Multiple style mode
-
-The browser `console.log` method not only supports styling a single string, but supports providing multiple styles to multiple strings. This functionality can be used by passing in a configuration object to the `.make()` function that provides a truthy value for the property `multi`:
-
-![](./examples-multi.png)
+```js
+chic.log`Hello World`;
+chic.log`Hello${chic.fontSize._1rem()} World`;
+```
