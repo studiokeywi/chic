@@ -6,8 +6,8 @@
 [vite]: https://vitejs.dev
 [esbuild]: https://esbuild.github.io/
 [jsdelivr]: https://jsdelivr.net
-[css builder syntax]: #CSS%20Builder%20Syntax
-[fix]: #Fixed%20Styles
+[css builder syntax]: #css-builder-syntax
+[fix]: #fixed-styles
 
 <!--  -->
 
