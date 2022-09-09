@@ -1,4 +1,4 @@
-const cssWrap = str => (str ? `%c${str}` : str);
+const cssWrap = str => (str !== '' ? `%c${str}` : str);
 const useCss = (strs, { length }) => (length ? strs.map(cssWrap).filter(Boolean) : strs).join('');
 const chicModes = ['debug', 'error', 'group', 'groupCollapsed', 'info', 'log', 'warn'];
 const loggerMap = mode => {
