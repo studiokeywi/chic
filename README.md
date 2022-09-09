@@ -84,7 +84,7 @@ const someUsername = 'Gary Garrison';
 chic.log(['User: ', someUsername], chic['font-weight'].bolder.padding['1rem'](), chic.color.yellow());
 ```
 
-### CSS Builder Syntax
+<h3 id="css-builder-syntax">CSS Builder Syntax</h3>
 
 Behind the scenes, `chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
 
@@ -108,7 +108,7 @@ chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue();
 // returns 'background:#c0c0c0;border-radius:0.5rem;border:0.125rem solid blue'
 ```
 
-#### Fixed Styles
+<h4 id="fixed-styles">Fixed Styles</h4>
 
 If there are certain base styles you want to apply to multiple areas, you could start by building up a partial string and then appending it with another built style string manually:
 
