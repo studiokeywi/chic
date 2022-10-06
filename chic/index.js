@@ -9,7 +9,15 @@ const loggerMap = mode => {
   return [mode, logger];
 };
 const buildLoggers = () => Object.fromEntries(chicModes.map(loggerMap));
-const rgx = { hex: /\$/g, kebab: /(?=[A-Z])/, lead: /(^_)/, number: /(\d+)_(\d+)/g, snake: /_/g };
+const rgx = {
+  dashes: /-/g,
+  hex: /\$/g,
+  kebab: /(?=[A-Z])/,
+  lead: /(^_)/,
+  number: /(\d+)_(\d+)/g,
+  snake: /_/g,
+  quote: /"[^"]*?"/g,
+};
 const format = str =>
   str
     .replace(rgx.lead, '')
@@ -17,8 +25,12 @@ const format = str =>
     .replaceAll(rgx.number, '$1.$2')
     .replaceAll(rgx.snake, ' ')
     .split(rgx.kebab)
-    .map(str => str.toLowerCase())
-    .join('-');
+    .reduce((out, str) => `${out}${out ? '-' : ''}${str.toLowerCase()}`, '')
+    .replaceAll(rgx.quote, match => {
+      const stripped = match.replaceAll(rgx.dashes, '');
+      const [quote] = str.match(new RegExp(stripped, 'i'));
+      return quote;
+    });
 const groupEnd = () => console.groupEnd();
 const buildChic = (fixed = []) => {
   const apply = () => [...fixed, ...styles.splice(0, styles.length)].map(style => style.join(':')).join(';');

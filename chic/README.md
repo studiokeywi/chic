@@ -54,9 +54,9 @@ window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/index.
 
 ### CSS Tagged Template Literal Logging
 
-**NOTE:** If you have `chic` embedded in a project, you can run any of these examples below to see what the styled output looks like.
+**NOTE:** If you have `chic` embedded in a project or loaded into the browser as described above, you can run any of these examples below to see what the styled output looks like.
 
-`chic` wraps around the styleable logging methods provided by the `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
+`chic` wraps around the styleable logging methods provided by the browser's `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
 
 ```javascript
 chic.log`Hello World`;
@@ -65,7 +65,7 @@ chic.log`Hello World`;
 Each section of text can receive it's own styling. Simply interpolate the style string directly afterwards the text with the [CSS Builder syntax]:
 
 ```javascript
-chic.log`Hello World${chic.background.black.color.white()}`;
+chic.log`Hello World${chic.background.darkslategray.color.lightgray()}`;
 chic.log`Hello${chic.color.red()} World${chic.color.blue()}`;
 ```
 
@@ -85,6 +85,8 @@ chic.log(['User: ', someUsername], chic['font-weight'].bolder.padding['1rem'](),
 ```
 
 <h3 id="css-builder-syntax">CSS Builder Syntax</h3>
+
+**NOTE:** Firefox offers different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there.
 
 Behind the scenes, `chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
 
@@ -107,6 +109,21 @@ The second is to use special formatting as described in this chart:
 chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue();
 // returns 'background:#c0c0c0;border-radius:0.5rem;border:0.125rem solid blue'
 ```
+
+##### Notes
+
+- When using `$` substitution, use lowercase characters in your hex to prevent the styling from being treated as camelCase for kebab-case conversion:
+  ```javascript
+  // Don't Use
+  chic.color.$C0C0C0(); // returns "color:#-c0-c0-c0"
+  // Use Instead
+  chic.color.$c0c0c0(); // returns "color:#c0c0c0"
+  ```
+- Certain CSS properties can include quotation marks, which do not have a variable substitution. However, bracket notation can allow these to be used:
+  ```javascript
+  chic.fontFamily['"Fira Code", monospace']();
+  // returns 'font-family:"Fira Code", monospace'
+  ```
 
 <h4 id="fixed-styles">Fixed Styles</h4>
 
