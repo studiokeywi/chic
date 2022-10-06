@@ -1,6 +1,6 @@
 {
   "name": "@studiokeywi/chic",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Browser console.log CSS helper",
   "keywords": [],
   "author": "studioKeywi <dev@studiokeywi.dev> (https://studiokeywi.dev)",
@@ -9,6 +9,8 @@
   "exports": {
     ".": "./index.js"
   },
+  "browser": "./index.js",
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "github:studiokeywi/chic"
