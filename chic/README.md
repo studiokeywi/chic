@@ -13,11 +13,11 @@
 
 # chic
 
-`chic` is a tiny assistant for helping make browser `console.log()` output prettier
+`Chic` is a tiny assistant for helping make browser `console.log()` output prettier
 
 ## Getting Started
 
-`chic` is meant to be used and viewed in the browser, and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
+`Chic` is meant to be used and viewed in the browser, and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
 
 `https://cdn.jsdelivr.net/npm/@studiokeywi/chic/index.js` (NPM mirror)  
 `https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/index.js` (GitHub mirror)
@@ -31,10 +31,9 @@ Example:
 </script>
 ```
 
-If you are using a bundler, then you can download and install via npm:
+If you are using a modern front end framework or bundler for front end, then you can download and install via npm:
 
-`npm i @studiokeywi/chic` (if you want users to see pretty messages when using their browser console)  
-`npm i -D @studiokeywi/chic` (if you want pretty messages for your development only)
+`npm i @studiokeywi/chic` (or use `npm i -D @studiokeywi/chic` if your bundler/compiler will manage development dependencies)
 
 And then import it at the top of your file(s):
 
@@ -43,7 +42,7 @@ import chic from '@studiokeywi/chic';
 // code where you would use chic below...
 ```
 
-If you want a preview without requiring a project to embed or install `chic`, you can open up your browser's console and use the following snippet:
+If you want a preview without requiring a project to embed or install `Chic`, you can open up your browser's console and use the following snippet:
 
 ```javascript
 window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/index.js')).default;
@@ -54,9 +53,9 @@ window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/i
 
 ### CSS Tagged Template Literal Logging
 
-**NOTE:** If you have `chic` embedded in a project or loaded into the browser as described above, you can run any of these examples below to see what the styled output looks like.
+> **NOTE:** If you have `Chic` embedded in a project or loaded into the browser as described above, you can run any of these examples below to see what the styled output looks like.
 
-`chic` wraps around the styleable logging methods provided by the browser's `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
+`Chic` wraps around the styleable logging methods provided by the browser's `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
 
 ```javascript
 chic.log`Hello World`;
@@ -75,9 +74,9 @@ Templates without interpolated style strings will be unstyled, as will any text 
 chic.log`Hello${chic['font-size']['1rem']()} World`;
 ```
 
-#### What About Variable Interpolation?
+#### What About Styled Variable Interpolation?
 
-Since `chic` assumes that values passed through interpolation are styles, you may be wondering how to apply styles to variables. The traditionally function call for tagged templates take in an array for the first param, and then all styles as the remaining params:
+Since `Chic` assumes that values passed through interpolation are styles, you may be wondering how to apply styles to variables. The traditional function call for tagged templates take in an array-like for the first param, and then all styles as the remaining params:
 
 ```javascript
 const someUsername = 'Gary Garrison';
@@ -86,9 +85,9 @@ chic.log(['User: ', someUsername], chic['font-weight'].bolder.padding['1rem'](),
 
 <h3 id="css-builder-syntax">CSS Builder Syntax</h3>
 
-**NOTE:** Firefox offers different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there.
+> **NOTE:** Firefox may offer different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there.
 
-Behind the scenes, `chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
+Behind the scenes, `Chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
 
 ```javascript
 chic.background['#c0c0c0']['border-radius']['0.5rem'].border['0.125rem solid blue']();
@@ -110,24 +109,35 @@ chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue();
 // returns 'background:#c0c0c0;border-radius:0.5rem;border:0.125rem solid blue'
 ```
 
-##### Notes
-
-- When using `$` substitution, use lowercase characters in your hex to prevent the styling from being treated as camelCase for kebab-case conversion:
-  ```javascript
-  // Don't Use
-  chic.color.$C0C0C0(); // returns "color:#-c0-c0-c0"
-  // Use Instead
-  chic.color.$c0c0c0(); // returns "color:#c0c0c0"
-  ```
-- Certain CSS properties can include quotation marks, which do not have a variable substitution. However, bracket notation can allow these to be used:
-  ```javascript
-  chic.fontFamily['"Fira Code", monospace']();
-  // returns 'font-family:"Fira Code", monospace'
-  ```
+> **NOTES:**
+>
+> - When using `$` substitution, use lowercase characters in your hex to prevent the styling from being treated as camelCase for kebab-case conversion:
+>   ```javascript
+>   // Don't Use
+>   chic.color.$C0C0C0(); // returns "color:#-c0-c0-c0"
+>   // Use Instead
+>   chic.color.$c0c0c0(); // returns "color:#c0c0c0"
+>   ```
+> - Certain CSS properties can include commas and/or quotation marks, which do not have a variable substitution. However, bracket notation can allow these to be used:
+>   ```javascript
+>   chic.fontFamily['"Fira Code", monospace']();
+>   // returns 'font-family:"Fira Code", monospace'
+>   ```
+> - Due to the use of underscores in numbers, you cannot perform shorthand numeric definitions for properties (eg `margin: 0 0.25rem 0 0`) with this special syntax. As with quotation marks, bracket notation can allow these to be used:
+>   ```javascript
+>   // Don't Use
+>   chic.margin._0_0_25rem_0_0(); // returns 'margin:0.0 25rem 0.0'
+>   // Use Instead
+>   chic.margin['0 0.25rem 0 0'](); // returns 'margin:0 0.25rem 0 0'
+>   ```
+>   - Using shorthand notation with units should work as expected:
+>     ```javascript
+>     chic.margin._0rem_0_25rem_0rem_0rem(); // returns 'margin:0rem 0.25rem 0rem 0rem;'
+>     ```
 
 <h4 id="fixed-styles">Fixed Styles</h4>
 
-If there are certain base styles you want to apply to multiple areas, you could start by building up a partial string and then appending it with another built style string manually:
+If there are certain base styles you want to apply to multiple areas, you could start by building up a partial string and then append it to another style string manually:
 
 ```javascript
 const infoStyle = chic.background.$c0c0c0.color.white();
@@ -135,7 +145,7 @@ const infoBox = `${infoStyle};${chic.padding['1rem'].border['0.125rem solid blue
 chic.log`Something to know${infoBox}`;
 ```
 
-Using `chic.fix()` allows you to fix the current level of styling by returning a new `chic` object so that you can more easily create style definitions with shared properties:
+Using `chic.fix()` allows you to fix the current level of styling by returning a new `Chic` object so that you can more easily create style definitions with shared properties:
 
 ```javascript
 const infoStyle = chic.background.$c0c0c0.color.white.fix();
@@ -143,10 +153,43 @@ const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue']();
 chic.log`Something to know${infoBox}`;
 ```
 
-Since `chic.fix()` returns a new `chic` object, you can also use the value as a logger itself (just don't forget to pass in the styles -- `chic` will persist your fixed styles when creating new styles, but not when logging):
+Since `chic.fix()` returns a new `Chic` object, you can also use the return value as a logger itself; just don't forget to pass in the styles -- `Chic` will persist your fixed styles when creating new styles, but not when logging:
 
 ```javascript
 const infoStyle = chic.background.$c0c0c0.color.white.fix();
 const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue'].fix();
 infoBox.log`Something to know${infoBox()}`;
 ```
+
+## Advanced
+
+### Build
+
+Beyond the default `Chic` object, you can also import the `Chic` builder function to have a more customized logger:
+
+```javascript
+import { buildChic } from '@studiokeywi/chic';
+
+const chic = buildChic();
+```
+
+- TODO: something about `buildChic` params
+
+### Plugins
+
+> **NOTE:** Very experimental. May disappear at any time
+
+Plugins can be used to extend `Chic` functionality. Plugin objects are assigned in the `plugins` param for `buildChic`:
+
+```javascript
+import { buildChic } from '@studiokeywi/chic';
+import somePlugin from './plugins/myPlugin.js';
+
+const chic = buildChic({ plugins: [somePlugin] });
+// code where you would use chic below...
+```
+
+<!-- TODO: document plugins shit -->
+
+- Something about plugins are `{ install(chic: Chic): any }`
+- Something about default plugins `drawImage`, `labelMaker`

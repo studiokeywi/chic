@@ -3,5 +3,8 @@
     "chic",
     "test"
   ],
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev": "npm run -w chic build:clean && npm run -w test dev"
+  }
 }

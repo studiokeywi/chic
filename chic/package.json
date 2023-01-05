@@ -1,18 +1,52 @@
 {
   "name": "@studiokeywi/chic",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Browser console.log CSS helper",
   "keywords": [],
   "author": "studioKeywi <dev@studiokeywi.dev> (https://studiokeywi.dev)",
   "license": "MIT",
   "type": "module",
+  "main": "./dist/index.js",
+  "browser": "./dist/index.js",
   "exports": {
-    ".": "./index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./plugins": {
+      "types": "./dist/plugins/index.d.ts",
+      "import": "./dist/plugins/index.js"
+    },
+    "./plugins/*": {
+      "types": "./dist/plugins/*.d.ts",
+      "import": "./dist/plugins/*.js"
+    }
   },
-  "browser": "./index.js",
-  "main": "./index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/index.d.ts"
+      ],
+      "plugins": [
+        "./dist/plugins/index.d.ts"
+      ],
+      "plugins/*": [
+        "./dist/plugins/*.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "rm -rf ./dist && npm run build",
+    "prepublish": "npm run build:clean"
+  },
   "repository": {
     "type": "git",
     "url": "github:studiokeywi/chic"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
   }
 }
