@@ -1,6 +1,6 @@
 <!-- links -->
 
-[readme]: https://github.studiokeywi.dev/chic/chic/README.md
+[readme]: https://github.studiokeywi.dev/chic/blob/primary/chic/README.md
 
 <!--  -->
 
