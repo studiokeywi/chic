@@ -8,6 +8,7 @@
 [jsdelivr]: https://jsdelivr.net
 [css builder syntax]: #css-builder-syntax
 [fix]: #fixed-styles
+[the plugins page]: https://github.studiokeywi.dev/chic/chic/plugins.md
 
 <!--  -->
 
@@ -173,23 +174,12 @@ import { buildChic } from '@studiokeywi/chic';
 const chic = buildChic();
 ```
 
-- TODO: something about `buildChic` params
+`buildChic` takes an optional configuration object, with two optional properties: `fixed` and `plugins`. `fixed` is an array of strings representing a fixed portion of styling; internally, this is how the `.fix()` function continues styles to the new instance. `plugins` is an array of plugin objects (as defined in the section below).
+
+#### Why would I want this?
+
+The default `Chic` object installs certain plugins automatically. For smaller bundling, you may wish to omit these by building a custom instance.
 
 ### Plugins
 
-> **NOTE:** Very experimental. May disappear at any time
-
-Plugins can be used to extend `Chic` functionality. Plugin objects are assigned in the `plugins` param for `buildChic`:
-
-```javascript
-import { buildChic } from '@studiokeywi/chic';
-import somePlugin from './plugins/myPlugin.js';
-
-const chic = buildChic({ plugins: [somePlugin] });
-// code where you would use chic below...
-```
-
-<!-- TODO: document plugins shit -->
-
-- Something about plugins are `{ install(chic: Chic): any }`
-- Something about default plugins `drawImage`, `labelMaker`
+See [the plugins page] for more information

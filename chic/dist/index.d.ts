@@ -8,7 +8,8 @@ declare const _default: Chic;
 export default _default;
 /** Extra functionality provided by Chic plugins */
 interface ChicPlugins {
-    [plugin: string]: ChicPluginFunction<any>;
+    install(plugin: ChicPlugin): void;
+    uninstall(id: string): void;
 }
 /** Chic style builder proxy */
 type ChicCSS = {
@@ -20,7 +21,9 @@ export type Chic = {
     /** Builds the current style string */
     (): string;
     /** Extra features available from installed plugins */
-    plugins: ChicPlugins;
+    plugins: ChicPlugins & {
+        [plugin: string]: ChicPluginFunction;
+    };
     /** Create a new Chic instances with the currently pending styles fixed  */
     fix(): Chic;
 } & ChicCSS & ChicLoggers;

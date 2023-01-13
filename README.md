@@ -4,4 +4,4 @@
 
 ## Getting Started
 
-For `chic` documentation, check out the [`chic` README](/chic/README.md). For a simple live example, clone this repo and then run `npm i && npm run dev`
+For `chic` documentation, check out the [`chic` README](https//github.studiokeywi.dev/chic/chic/README.md). For a simple live example, clone this repo and then run `npm i && npm run dev`

@@ -1,5 +1,7 @@
-import chic from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic';
+import { labelMaker } from '@studiokeywi/chic/plugins';
 
+const chic = buildChic({ plugins: [labelMaker] });
 // prettier-ignore
 const baseLabel = chic
   .border      .solid_black_0_125rem
@@ -18,7 +20,7 @@ const warnColor = 'yellow';
 
 const makeStyle = color => baseLabel.borderColor[color].color[color]();
 
-export const test = () => {
+export default () => {
   const labels = chic.plugins.labelMaker({
     debug: { label: 'DBG', style: makeStyle(dbgColor) },
     error: { label: 'ERR', style: makeStyle(errColor) },

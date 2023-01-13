@@ -1,4 +1,4 @@
-import { ChicPlugin, ChicPluginFunction, drawImage, labelMaker } from './plugins/index.js';
+import { ChicPlugin, ChicPluginFunction, drawImage, labelMaker, snoop, timestamp } from './plugins/index.js';
 
 /** All valid Chic logger modes */
 const chicModes = ['debug', 'error', 'group', 'groupCollapsed', 'info', 'log', 'warn'];
@@ -46,7 +46,7 @@ const groupEnd = () => console.groupEnd();
  * @param {string} mode Logger mode
  * @returns An Object entry for the Chic logger */
 const loggerMap = (mode: string) => {
-  const logger = (strs: TemplateStringsArray, ...styles: string[]) => {
+  const logger: ChicLogger = (strs, ...styles: string[]) => {
     while (styles.length < strs.length) styles.push('');
     console[mode](useCss(strs, styles), ...styles);
   };
@@ -56,7 +56,7 @@ const loggerMap = (mode: string) => {
  * @param strs Text to display
  * @param styles Styles array
  * @returns A single CSS formatted string */
-const useCss = (strs: TemplateStringsArray, { length }: string[]) =>
+const useCss = (strs: TemplateStringsArray | string[], { length }: string[]) =>
   (length ? strs.map(cssWrap).filter(Boolean) : strs).join('');
 
 /** Builds a new instance of a Chic logger
@@ -77,28 +77,42 @@ export const buildChic = ({ fixed = [], plugins = [] }: ChicConfig = {}) => {
   /** Current CSS styles */
   const styles: string[][] = [];
   /** Builds the current style string */
-  const buildStyle = () => {
-    const styles = useStyles();
-    return styles.map(style => style.join(':')).join(';');
+  const buildStyle = () => useStyles(true).join(';');
+  /** Gets all fixed and pending styles, then resets all currently pending styles
+   * @param map Whether to map the inner arrays to single strings joined with `:` */
+  const useStyles = (map = false) => {
+    const use = [...fixed, ...styles.splice(0, styles.length)];
+    return map ? use.map(style => style.join(':')) : use;
   };
-  /** Get and reset all currently available styles */
-  const useStyles = () => [...fixed, ...styles.splice(0, styles.length)];
-  const fix = () => {
-    const fixed = buildChic({ fixed: useStyles() });
-    fixed.plugins = chic.plugins;
-    return fixed;
+  /** Install/Uninstall plugins functions */
+  const pluginObj: ChicPlugins = {
+    install: (plugin: ChicPlugin) => {
+      if (plugin.id in chic.plugins) return chic.warn`Cannot overwrite an existing plugin`;
+      const pluginFn = plugin.install(chic);
+      if (plugin.uninstall) pluginFn.uninstall = plugin.uninstall;
+      chic.plugins[plugin.id] = pluginFn;
+    },
+    uninstall: (id: string) => {
+      if (!(id in chic.plugins)) return;
+      chic.plugins[id]?.uninstall?.(chic);
+      delete chic.plugins[id];
+    },
   };
+  /** Loggers, fix, and plugins */
+  const chicBase = { ...loggers, fix: () => buildChic({ fixed: useStyles() as string[][] }), plugins: pluginObj };
   /** Chic object */
-  const chic: Chic = new Proxy(Object.assign(buildStyle, { plugins: {}, fix, ...loggers }), chicHandler);
-  plugins.forEach(plugin => plugin.install(chic));
+  const chic: Chic = new Proxy(Object.assign(buildStyle, chicBase), chicHandler);
+  plugins.forEach(chic.plugins.install);
   return chic;
 };
 /** Chic: CSS console formatting through tagged templates */
-export default buildChic({ plugins: [drawImage, labelMaker] });
+export default /* @__PURE__ */ buildChic({ plugins: [drawImage, labelMaker, snoop, timestamp] });
 
 /** Extra functionality provided by Chic plugins */
 interface ChicPlugins {
-  [plugin: string]: ChicPluginFunction<any>;
+  install(plugin: ChicPlugin): void;
+  uninstall(id: string): void;
+  // [plugin: string]: ChicPluginFunction;
 }
 /** Chic style builder proxy */
 type ChicCSS = {
@@ -112,7 +126,7 @@ export type Chic = {
   (): string;
   // SECTION: chic API
   /** Extra features available from installed plugins */
-  plugins: ChicPlugins;
+  plugins: ChicPlugins & { [plugin: string]: ChicPluginFunction };
   /** Create a new Chic instances with the currently pending styles fixed  */
   fix(): Chic;
 } & ChicCSS &

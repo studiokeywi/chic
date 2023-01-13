@@ -1,6 +1,9 @@
-import chic from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic';
+import { drawImage } from '@studiokeywi/chic/plugins';
 import testImg from '../../img/test.png';
 import { clear } from './index.js';
+
+const chic = buildChic({ plugins: [drawImage] });
 
 const imageEle = document.createElement('img');
 const panel = document.querySelector('#plugins');
@@ -20,7 +23,7 @@ const prep = image => () => {
 };
 const testDraw = image => () => chic.plugins.drawImage(image);
 
-export const test = () => {
+export default () => {
   const image = new Image();
   image.addEventListener('load', prep(image));
   image.src = testImg;

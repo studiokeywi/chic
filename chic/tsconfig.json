@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "emitDeclarationOnly": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "dist",
     "sourceMap": true,
     "target": "ES2022"
   },
-  "include": ["lib/**/*"]
+  "exclude": ["iife.ts"],
+  "include": ["lib/**/*", "iife.ts"]
 }
