@@ -20,14 +20,14 @@
 
 `Chic` is meant to be used and viewed in the browser, and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
 
-`https://cdn.jsdelivr.net/npm/@studiokeywi/chic/index.js` (NPM mirror)  
-`https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/index.js` (GitHub mirror)
+`https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.js` (NPM mirror)  
+`https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/dist/index.js` (GitHub mirror)
 
 Example:
 
 ```html
 <script type="module">
-  import chic from 'https://cdn.jsdelivr.net/npm/@studiokeywi/chic/index.js';
+  import chic from 'https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.js';
   // code where you would use chic below...
 </script>
 ```
@@ -46,7 +46,7 @@ import chic from '@studiokeywi/chic';
 If you want a preview without requiring a project to embed or install `Chic`, you can open up your browser's console and use the following snippet:
 
 ```javascript
-window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/index.js')).default;
+window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/dist/index.js')).default;
 // code where you would use chic below...
 ```
 
@@ -169,7 +169,7 @@ infoBox.log`Something to know${infoBox()}`;
 Beyond the default `Chic` object, you can also import the `Chic` builder function to have a more customized logger:
 
 ```javascript
-import { buildChic } from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic/build';
 
 const chic = buildChic();
 ```

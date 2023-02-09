@@ -1,4 +1,4 @@
-import { Chic } from '../index.js';
+import { type Chic } from '../chic.js';
 
 export { default as drawImage } from './drawImage.js';
 export { default as labelMaker } from './labelMaker.js';

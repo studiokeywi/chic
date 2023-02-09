@@ -1,22 +1,25 @@
 let running;
-var snoop_default = {
-  id: "snoop",
-  // TODO: documentation
-  install: (chic) => ({ check, labels = ["Event Occurred"], level = "log", rate = 100, repeat = false, styles = [""] }) => {
-    const log = () => (chic[level](labels, ...styles), !repeat && stop());
-    const poll = () => {
-      const ready = check();
-      if (!(ready instanceof Promise))
-        return ready ? log() : void 0;
-      ready.then((ready2) => ready2 ? log() : void 0);
-    };
-    const start = () => (running && stop(), running = setInterval(poll, rate));
-    const stop = () => clearInterval(running);
-    start();
-    return { start, stop };
-  },
-  uninstall: () => clearInterval(running)
+const install = (chic) => ({ check, labels = ["Event Occurred"], level = "log", repeat = false, styles = [""] }) => {
+  const log = () => (chic[level](labels, ...styles), repeat && start());
+  const poll = () => {
+    const ready = check();
+    const result = (ready2) => (ready2 ? log : start)();
+    if (!(ready instanceof Promise))
+      return result(ready);
+    ready.then(result);
+  };
+  const start = () => {
+    if (running)
+      stop();
+    running = requestAnimationFrame(poll);
+  };
+  const stop = () => {
+    cancelAnimationFrame(running);
+  };
+  start();
+  return { start, stop };
 };
+var snoop_default = { id: "snoop", install, uninstall: () => cancelAnimationFrame(running) };
 export {
   snoop_default as default
 };

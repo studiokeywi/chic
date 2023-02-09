@@ -1,11 +1,8 @@
-import { ChicPlugin, ChicPluginFunction } from './plugins/index.js';
+import { type ChicPlugin, type ChicPluginFunction } from './plugins/index.js';
 /** Builds a new instance of a Chic logger
  * @param {import('@studiokeywi/chic').ChicConfig} config Chic config
  * @returns A new Chic logger with styles that will always apply */
 export declare const buildChic: ({ fixed, plugins }?: ChicConfig) => Chic;
-/** Chic: CSS console formatting through tagged templates */
-declare const _default: Chic;
-export default _default;
 /** Extra functionality provided by Chic plugins */
 interface ChicPlugins {
     install(plugin: ChicPlugin): void;
@@ -20,12 +17,12 @@ type ChicCSS = {
 export type Chic = {
     /** Builds the current style string */
     (): string;
+    /** Create a new Chic instances with the currently pending styles fixed  */
+    fix(): Chic;
     /** Extra features available from installed plugins */
     plugins: ChicPlugins & {
         [plugin: string]: ChicPluginFunction;
     };
-    /** Create a new Chic instances with the currently pending styles fixed  */
-    fix(): Chic;
 } & ChicCSS & ChicLoggers;
 /** Configuration for building Chic instances */
 export type ChicConfig = {
@@ -104,3 +101,4 @@ export type ChicLoggers = {
      * @example chic.warn`Total | ${''}Success${chic.color.green()} | ${''}Failed${chic.color.red()}`; */
     warn(strs: TemplateStringsArray, ...styles: string[]): void;
 };
+export {};

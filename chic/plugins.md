@@ -92,22 +92,23 @@ Allows simple messages to be automatically logged when a given condition occurs
 
 ```typescript
 chic.plugins.snoop: ({
-  check: Function,
+  check: (...args: any[]) => boolean,
   labels?: string[],
   level?: keyof ChicLoggers,
-  rate?: number,
   repeat?: boolean,
-  styles?: string[] }) => { start: Function, stop: Function }
+  styles?: string[]
+}) => { start: () => void, stop: () => void }
 ```
 
 - `check`: Function that returns (or resolves) to a value. When this returns (or resolves) to a truthy value, `Chic` automatically logs `labels` with `styles` and stops checking (unless `repeat` is set to true)
 - `labels`: Text values to display when automatically logging, with `styles` applied (default `['Event Occured']`)
 - `level`: `Chic` logger level to use (default `'log'`)
-- `rate`: Interval period (in ms) (default `100`)
 - `repeat`: Controls whether or not to stop checking once a message has been logged once (default `false`)
 - `styles`: CSS strings to style the `labels` when automatically logging (default `['']`)
 
-The returned `start` and `stop` functions can be used to further customize when you are snooping or not. See the examples project for more
+The returned `start` and `stop` functions can be used to further customize when you are snooping or not. See the examples project for more.
+
+**NOTE:** The `snoop` plugin uses `requestAnimationFrame` internally to prevent execution while the window is not in focus. Do not rely on this for time-sensitive purposes unless you intend to monitor the window during the entire time of its use.
 
 ### timestamp
 

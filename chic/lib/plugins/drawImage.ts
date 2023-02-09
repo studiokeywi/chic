@@ -1,50 +1,48 @@
-import { Chic } from '../index.js';
-import { ChicPlugin } from './index.js';
+import { type Chic } from '../chic.js';
+import { type ChicPlugin } from './index.js';
+
+/** Get image data from a source by drawing it to a canvas and converting the pixel data into `rgba(r, g, b, a)` strings
+ * @param image */
+const generateRGBAStrings = (drawFont: Chic, data: Uint8ClampedArray) => {
+  const hexStrs: string[] = [];
+  let curPixel: number[];
+  for (let idx = 0; idx < data.length; idx++) {
+    if (!(idx % 4)) curPixel = [];
+    curPixel.push(data[idx]);
+    if (curPixel.length < 4) continue;
+    const rgba = `rgba(${curPixel.join(',')})`;
+    hexStrs.push(drawFont.backgroundColor[rgba].border[`solid ${rgba} 5px`]());
+  }
+  return hexStrs;
+};
 
 const install = (chic: Chic) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  const drawFont = chic.fontFamily.monospace.fontSize._10px.lineHeight._10px.margin._0.padding._0.fix();
+  // prettier-ignore
+  const drawFont = chic
+    .fontFamily.monospace
+    .fontSize  ._10px
+    .lineHeight._10px
+    .margin    ._0
+    .padding   ._0
+    .fix();
   const drawStyle = drawFont();
-  /** Get image data from a source by drawing it to a canvas and converting the pixel data into `rgba(r, g, b, a)` strings
-   * @param image */
-  const generateRGBAStrings = (data: Uint8ClampedArray) => {
-    const hexStrs: string[] = [];
-    let curPixel: number[];
-    for (let idx = 0; idx < data.length; idx++) {
-      if (!(idx % 4)) curPixel = [];
-      curPixel.push(data[idx]);
-      if (curPixel.length !== 4) continue;
-      const rgba = `rgba(${curPixel.join(',')})`;
-      hexStrs.push(drawFont.backgroundColor[rgba].border[`solid ${rgba} 5px`]());
-    }
-    return hexStrs;
-  };
-  /** Get the height and width values as numbers from a CanvasImageSource
-   * @param image */
-  const parseDimensions = (image: CanvasImageSource) => {
-    let { height, width } = image;
-    if (height instanceof SVGAnimatedLength) height = height.animVal.value;
-    if (width instanceof SVGAnimatedLength) width = width.animVal.value;
-    if (height * width > 65355) throw new TypeError('Image too large for Chic to render');
-    return { height, width };
-  };
   // TODO: figure out how to apply intellisense from here to actual object, if possible
   /** Draws an image to the console, if it is drawable to an HTML Canvas
    * @param  image */
   return (image: CanvasImageSource) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const { height, width } = parseDimensions(image);
-    canvas.height = height;
-    canvas.width = width;
+    Object.assign(canvas, { height, width });
     ctx.drawImage(image, 0, 0);
     const { data } = ctx.getImageData(0, 0, width, height);
-    const hexValues = generateRGBAStrings(data);
+    const hexStyles = generateRGBAStrings(drawFont, data);
     const text = [];
     const styles = [];
     for (let row = 0; row < height; row++) {
       for (let col = 0; col < width; col++) {
         text.push('  ');
-        styles.push(hexValues[col + row * width]);
+        styles.push(hexStyles[col + row * width]);
       }
       text.push('\n');
       styles.push(drawStyle);
@@ -53,4 +51,14 @@ const install = (chic: Chic) => {
   };
 };
 
-export default { id: 'drawImage', install } as ChicPlugin;
+/** Get the height and width values as numbers from a CanvasImageSource
+ * @param image */
+const parseDimensions = (image: CanvasImageSource) => {
+  let { height, width } = image;
+  if (height instanceof SVGAnimatedLength) height = height.animVal.value;
+  if (width instanceof SVGAnimatedLength) width = width.animVal.value;
+  if (height * width > 65355) throw new TypeError('Image too large for Chic to render');
+  return { height, width };
+};
+
+export default <ChicPlugin>{ id: 'drawImage', install };

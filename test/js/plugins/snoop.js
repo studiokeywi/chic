@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic/build';
 import { snoop } from '@studiokeywi/chic/plugins';
 
 const _1s = 1e3;
@@ -13,7 +13,7 @@ const foo = { foo: 'foo bar baz' };
 const styles = [chic.fontSize._1rem.fontWeight.bolder(), chic.padding._0_25rem()];
 
 const noStartStop = async () => {
-  chic.log`Begin snoop (not using start/stop)`;
+  chic.group`Begin snoop (not using start/stop)`;
   chic.plugins.snoop(config);
   await wait(_5s);
   chic.log`Assign data to window.foo`;
@@ -22,10 +22,11 @@ const noStartStop = async () => {
   chic.log`Delete window.foo`;
   delete window.foo;
   await wait(_1s);
+  chic.groupEnd();
 };
 const repeatMode = async () => {
-  chic.log`Begin snoop (using repeat & 1s rate)`;
-  const snoop = chic.plugins.snoop({ ...config, rate: _1s, repeat: true });
+  chic.group`Begin snoop (using repeat)`;
+  const snoop = chic.plugins.snoop({ ...config, repeat: true });
   chic.log`Assign data to window.foo`;
   Object.assign(window, foo);
   await wait(_5s);
@@ -33,10 +34,11 @@ const repeatMode = async () => {
   snoop.stop();
   chic.log`Delete window.foo`;
   delete window.foo;
+  chic.groupEnd();
 };
 const wait = time => (chic.debug(['waiting ', time / _1s, 's...']), new Promise(resolve => setTimeout(resolve, time)));
 const withStartStop = async () => {
-  chic.log`Begin snoop (using start/stop)`;
+  chic.group`Begin snoop (using start/stop)`;
   const snoop = chic.plugins.snoop(config);
   chic.log`Stop snoop`;
   snoop.stop();
@@ -49,6 +51,7 @@ const withStartStop = async () => {
   await wait(_1s);
   chic.log`Delete window.foo`;
   delete window.foo;
+  chic.groupEnd();
 };
 
 export default async () => {

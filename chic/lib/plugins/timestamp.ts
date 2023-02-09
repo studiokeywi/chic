@@ -1,21 +1,30 @@
-import { Chic, ChicLoggers } from '../index.js';
-import { ChicPlugin } from './index.js';
+import { type Chic, type ChicLogger, type ChicLoggers } from '../chic.js';
+import { type ChicPlugin } from './index.js';
 
-export default {
-  id: 'timestamp',
-  // TODO: documentation
-  install: (chic: Chic) => {
-    const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
-    const ts = () => `[${new Date().toLocaleString()}]`;
-    return ({ style = dateStyle }: { style?: string } = {}): ChicLoggers => ({
-      debug: (strs, ...styles) => chic.debug([ts(), ...strs], style, ...styles),
-      error: (strs, ...styles) => chic.error([ts(), ...strs], style, ...styles),
-      group: (strs, ...styles) => chic.group([ts(), ...strs], style, ...styles),
-      groupCollapsed: (strs, ...styles) => chic.groupCollapsed([ts(), ...strs], style, ...styles),
-      groupEnd: () => chic.groupEnd(),
-      info: (strs, ...styles) => chic.info([ts(), ...strs], style, ...styles),
-      log: (strs, ...styles) => chic.log([ts(), ...strs], style, ...styles),
-      warn: (strs, ...styles) => chic.warn([ts(), ...strs], style, ...styles),
-    });
-  },
-} as ChicPlugin;
+// TODO: documentation
+const install = (chic: Chic) => {
+  const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
+  return ({ style = dateStyle } = <TimestampConfig>{ style: dateStyle }) =>
+    <ChicLoggers>{
+      debug: makeLogger(chic, 'debug', style),
+      error: makeLogger(chic, 'error', style),
+      group: makeLogger(chic, 'group', style),
+      groupCollapsed: makeLogger(chic, 'groupCollapsed', style),
+      groupEnd: chic.groupEnd.bind(chic),
+      info: makeLogger(chic, 'info', style),
+      log: makeLogger(chic, 'log', style),
+      warn: makeLogger(chic, 'warn', style),
+    };
+};
+
+// prettier-ignore
+const makeLogger = (chic: Chic, mode: keyof ChicLoggers, style: string): ChicLogger => (strs, ...styles) =>
+  chic[mode]([ts(), ...strs], style, ...styles);
+
+const ts = () => `[${new Date().toLocaleString()}]`;
+
+export default <ChicPlugin>{ id: 'timestamp', install };
+
+export type TimestampConfig = {
+  style?: string;
+};

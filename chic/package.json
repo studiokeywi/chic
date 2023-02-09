@@ -1,38 +1,32 @@
 {
   "name": "@studiokeywi/chic",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Browser console.log CSS helper",
   "keywords": [],
   "author": "studioKeywi <dev@studiokeywi.dev> (https://studiokeywi.dev)",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
-  "browser": "./dist/index.js",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./plugins": {
-      "types": "./dist/plugins/index.d.ts",
-      "import": "./dist/plugins/index.js"
-    },
-    "./plugins/*": {
-      "types": "./dist/plugins/*.d.ts",
-      "import": "./dist/plugins/*.js"
-    }
+    ".": "./dist/index.js",
+    "./build": "./dist/chic.js",
+    "./plugins": "./dist/plugins/index.js",
+    "./plugins/*": "./dist/plugins/*.js"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./types/index.d.ts",
   "typesVersions": {
     "*": {
       ".": [
-        "./dist/index.d.ts"
+        "./types/index.d.ts"
+      ],
+      "build": [
+        "./types/chic.d.ts"
       ],
       "plugins": [
-        "./dist/plugins/index.d.ts"
+        "./types/plugins/index.d.ts"
       ],
       "plugins/*": [
-        "./dist/plugins/*.d.ts"
+        "./types/plugins/*.d.ts"
       ]
     }
   },
@@ -40,7 +34,7 @@
     "build": "node build.js & tsc",
     "prebuild:clean": "npm run clean",
     "build:clean": "npm run build",
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./dist & rm -rf ./types",
     "prepublish": "npm run build:clean"
   },
   "repository": {

@@ -4,10 +4,10 @@
     "emitDeclarationOnly": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "dist",
+    "outDir": "types",
     "sourceMap": true,
     "target": "ES2022"
   },
   "exclude": ["iife.ts"],
-  "include": ["lib/**/*", "iife.ts"]
+  "include": ["lib/**/*"]
 }

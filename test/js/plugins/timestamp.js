@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic/build';
 import { timestamp } from '@studiokeywi/chic/plugins';
 
 const chic = buildChic({ plugins: [timestamp] });

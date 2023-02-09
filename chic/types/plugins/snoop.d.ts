@@ -1,9 +1,9 @@
-import { ChicLoggers } from '../index.js';
-import { ChicPlugin } from './index.js';
+import { ChicLoggers } from '../chic.js';
+import { type ChicPlugin } from './index.js';
 declare const _default: ChicPlugin;
 export default _default;
 export type SnoopConfig = {
-    check: Function;
+    check: (...args: any[]) => boolean | Promise<boolean>;
     labels?: string[];
     level?: keyof ChicLoggers;
     rate?: number;

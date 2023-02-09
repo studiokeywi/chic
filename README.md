@@ -1,7 +1,7 @@
 # chic
 
-`chic` is a tiny assistant for helping make browser `console.log()` output prettier
+`Chic` is a tiny assistant for helping make browser `console.log()` output prettier
 
 ## Getting Started
 
-For `chic` documentation, check out the [`chic` README](https//github.studiokeywi.dev/chic/chic/README.md). For a simple live example, clone this repo and then run `npm i && npm run dev`
+For `Chic` documentation, check out the [`Chic` README](https://github.com/studiokeywi/chic/blob/primary/chic/README.md). For a simple live example, clone this repo and then run `npm i && npm run dev`

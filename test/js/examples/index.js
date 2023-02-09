@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic';
+import { buildChic } from '@studiokeywi/chic/build';
 import basics from './basics.js';
 import css from './css.js';
 import fix from './fix.js';

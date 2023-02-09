@@ -9,17 +9,17 @@ const install = (chic) => {
     log: { label: "LOG", style: base.borderColor.green.color.green() },
     warn: { label: "WARN", style: base.borderColor.yellow.color.yellow() }
   };
-  const make = (mode, { label, style }) => (strs, ...styles) => chic[mode]([label, ...strs], ...[style, ...styles]);
-  return (config = {}) => {
-    const debug = make("debug", config.debug ?? defaults.debug);
-    const error = make("error", config.error ?? defaults.error);
-    const group = make("group", config.group ?? defaults.group);
-    const groupCollapsed = make("groupCollapsed", config.groupCollapsed ?? defaults.groupCollapsed);
-    const info = make("info", config.info ?? defaults.info);
-    const log = make("log", config.log ?? defaults.log);
-    const warn = make("warn", config.warn ?? defaults.warn);
-    return { debug, error, group, groupCollapsed, groupEnd: chic.groupEnd.bind(chic), info, log, warn };
-  };
+  const makeLogger = (mode, { label, style }) => (strs, ...styles) => chic[mode]([label, ...strs], ...[style, ...styles]);
+  return (config = {}) => ({
+    debug: makeLogger("debug", config.debug ?? defaults.debug),
+    error: makeLogger("error", config.error ?? defaults.error),
+    group: makeLogger("group", config.group ?? defaults.group),
+    groupCollapsed: makeLogger("groupCollapsed", config.groupCollapsed ?? defaults.groupCollapsed),
+    groupEnd: chic.groupEnd.bind(chic),
+    info: makeLogger("info", config.info ?? defaults.info),
+    log: makeLogger("log", config.log ?? defaults.log),
+    warn: makeLogger("warn", config.warn ?? defaults.warn)
+  });
 };
 var labelMaker_default = { id: "labelMaker", install };
 export {

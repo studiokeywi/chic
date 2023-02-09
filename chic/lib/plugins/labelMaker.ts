@@ -1,8 +1,15 @@
-import { Chic, ChicLogger, ChicLoggers } from '../index.js';
-import { ChicPlugin } from './index.js';
+import { type Chic, type ChicLogger, type ChicLoggers } from '../chic.js';
+import { type ChicPlugin } from './index.js';
 
 const install = (chic: Chic) => {
-  const base = chic.border.solid_0_125rem.borderRadius._0_5rem.fontSize._1rem.margin._0_25rem.padding._0_5rem.fix();
+  // prettier-ignore
+  const base = chic
+    .border      .solid_0_125rem
+    .borderRadius._0_5rem
+    .fontSize    ._1rem
+    .margin      ._0_25rem
+    .padding     ._0_5rem
+    .fix();
   const defaults = {
     debug: { label: 'DEBUG', style: base.borderColor.cyan.color.cyan() },
     error: { label: 'ERROR', style: base.borderColor.red.color.red() },
@@ -12,26 +19,26 @@ const install = (chic: Chic) => {
     log: { label: 'LOG', style: base.borderColor.green.color.green() },
     warn: { label: 'WARN', style: base.borderColor.yellow.color.yellow() },
   };
-  const make =
-    (mode: keyof ChicLoggers, { label, style }: LabelConfig): ChicLogger =>
-    (strs, ...styles) =>
-      chic[mode]([label, ...strs], ...[style, ...styles]);
+  // prettier-ignore
+  const makeLogger = (mode: keyof ChicLoggers, { label, style }: LabelConfig): ChicLogger => (strs, ...styles) =>
+    chic[mode]([label, ...strs], ...[style, ...styles]);
 
   // TODO: documentation
   // TODO: figure out how to apply intellisense from here to actual object, if possible
-  return (config: LabelMakerConfig = {}): ChicLoggers => {
-    const debug = make('debug', config.debug ?? defaults.debug);
-    const error = make('error', config.error ?? defaults.error);
-    const group = make('group', config.group ?? defaults.group);
-    const groupCollapsed = make('groupCollapsed', config.groupCollapsed ?? defaults.groupCollapsed);
-    const info = make('info', config.info ?? defaults.info);
-    const log = make('log', config.log ?? defaults.log);
-    const warn = make('warn', config.warn ?? defaults.warn);
-    return { debug, error, group, groupCollapsed, groupEnd: chic.groupEnd.bind(chic), info, log, warn };
-  };
+  return (config = <LabelMakerConfig>{}) =>
+    <ChicLoggers>{
+      debug: makeLogger('debug', config.debug ?? defaults.debug),
+      error: makeLogger('error', config.error ?? defaults.error),
+      group: makeLogger('group', config.group ?? defaults.group),
+      groupCollapsed: makeLogger('groupCollapsed', config.groupCollapsed ?? defaults.groupCollapsed),
+      groupEnd: chic.groupEnd.bind(chic),
+      info: makeLogger('info', config.info ?? defaults.info),
+      log: makeLogger('log', config.log ?? defaults.log),
+      warn: makeLogger('warn', config.warn ?? defaults.warn),
+    };
 };
 // TODO: documentation
-export default { id: 'labelMaker', install } as ChicPlugin;
+export default <ChicPlugin>{ id: 'labelMaker', install };
 
 // TODO: documentation
 export type LabelConfig = {
