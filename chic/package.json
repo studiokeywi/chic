@@ -1,6 +1,6 @@
 {
   "name": "@studiokeywi/chic",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Browser console.log CSS helper",
   "keywords": [],
   "author": "studioKeywi <dev@studiokeywi.dev> (https://studiokeywi.dev)",
@@ -8,10 +8,22 @@
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./build": "./dist/chic.js",
-    "./plugins": "./dist/plugins/index.js",
-    "./plugins/*": "./dist/plugins/*.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./build": {
+      "types": "./types/chic.d.ts",
+      "import": "./dist/chic.js"
+    },
+    "./plugins": {
+      "types": "./types/plugins/index.d.ts",
+      "import": "./dist/plugins/index.js"
+    },
+    "./plugins/*": {
+      "types": "./types/plugins/*.d.ts",
+      "import": "./dist/plugins/*.js"
+    }
   },
   "types": "./types/index.d.ts",
   "typesVersions": {
