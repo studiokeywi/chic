@@ -1,11 +1,14 @@
 <!-- links -->
 
+[in the browser]: #browser-only
 [webpack]: https://webpackjs.org
 [rollup]: https://rollupjs.org
 [snowpack]: https://snowpack.dev/
 [vite]: https://vitejs.dev
 [esbuild]: https://esbuild.github.io/
 [jsdelivr]: https://jsdelivr.net
+[styling console output]: https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
+[`chalk`]: https://npmjs.org/package/chalk
 [css builder syntax]: #css-builder-syntax
 [fix]: #fixed-styles
 [the plugins page]: https://github.studiokeywi.dev/chic/blob/primary/chic/plugins.md
@@ -14,11 +17,11 @@
 
 # chic
 
-`Chic` is a tiny assistant for helping make browser `console.log()` output prettier
+`Chic` is a tiny assistant for helping make browser `console.log()` output prettier.
 
 ## Getting Started
 
-`Chic` is meant to be used and viewed in the browser, and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
+`Chic` is meant to be used and viewed [in the browser], and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
 
 `https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.js` (NPM mirror)  
 `https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/dist/index.js` (GitHub mirror)
@@ -34,7 +37,7 @@ Example:
 
 If you are using a modern front end framework or bundler for front end, then you can download and install via npm:
 
-`npm i @studiokeywi/chic` (or use `npm i -D @studiokeywi/chic` if your bundler/compiler will manage development dependencies)
+`npm i @studiokeywi/chic` (or use `npm i -D @studiokeywi/chic` if your bundler/compiler will manage development dependencies).
 
 And then import it at the top of your file(s):
 
@@ -50,13 +53,21 @@ window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/d
 // code where you would use chic below...
 ```
 
+<h2 id="browser-only">Why Browser Only?</h2>
+
+This is due to the nature of browser-based console methods vs server-based (eg NodeJS) console methods. Following the information on MDN about [styling console output] in NodeJS will result in the styling being entirely stripped, due to the lack of CSS support.
+
+While `Chic` is expected (but not guaranteed) to still output text to the console for NodeJS, there are no attempts to convert potentially available CSS styles into console-compatible command sequences.
+
+If you need something to bring styling to your NodeJS console messages, we like [`chalk`].
+
 ## API
 
 ### CSS Tagged Template Literal Logging
 
 > **NOTE:** If you have `Chic` embedded in a project or loaded into the browser as described above, you can run any of these examples below to see what the styled output looks like.
 
-`Chic` wraps around the styleable logging methods provided by the browser's `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion:
+`Chic` wraps around the styleable logging methods provided by the browser's `console` object, but with a tagged template. This syntax means that styled logging is performed in a slightly different fashion than traditional methods:
 
 ```javascript
 chic.log`Hello World`;
@@ -86,9 +97,13 @@ chic.log(['User: ', someUsername], chic['font-weight'].bolder.padding['1rem'](),
 
 <h3 id="css-builder-syntax">CSS Builder Syntax</h3>
 
-> **NOTE:** Firefox may offer different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there.
+> **NOTE:** Firefox may offer different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there. See the list on MDN about [styling console output] for a list of potentially available CSS properties
 
-Behind the scenes, `Chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function. Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
+Behind the scenes, `Chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function.
+
+As seen above, the simples way to use this syntax is with simple text values that get mapped into alternating CSS properties and values (eg `chic.color.green()` results in `'color:green'`).
+
+Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
 
 ```javascript
 chic.background['#c0c0c0']['border-radius']['0.5rem'].border['0.125rem solid blue']();
@@ -112,6 +127,7 @@ chic.background.$c0c0c0.borderRadius._0_5rem.border._0_125rem_solid_blue();
 
 > **NOTES:**
 >
+> - As seen in the bracket syntax example, you can mix and match approaches based on your preference or needs. `chic['color'].green()` is the same as `chic.color.$008000()` for the final display purposes.
 > - When using `$` substitution, use lowercase characters in your hex to prevent the styling from being treated as camelCase for kebab-case conversion:
 >   ```javascript
 >   // Don't Use
@@ -142,7 +158,8 @@ If there are certain base styles you want to apply to multiple areas, you could 
 
 ```javascript
 const infoStyle = chic.background.$c0c0c0.color.white();
-const infoBox = `${infoStyle};${chic.padding['1rem'].border['0.125rem solid blue']()}`;
+const boxStyle = chic.padding['1rem'].border['0.125rem solid blue']();
+const infoBox = `${infoStyle};${boxStyle}`;
 chic.log`Something to know${infoBox}`;
 ```
 
@@ -168,13 +185,23 @@ infoBox.log`Something to know${infoBox()}`;
 
 Beyond the default `Chic` object, you can also import the `Chic` builder function to have a more customized logger:
 
-```javascript
-import { buildChic } from '@studiokeywi/chic/build';
+```typescript
+import { buildChic } from '@studiokeywi/chic';
 
 const chic = buildChic();
+
+/** Configuration for building Chic instances */
+type ChicConfig = {
+  /** Fixed styles to always apply when building style strings */
+  fixed?: string[][];
+  /** Plugins to extend Chic functionality */
+  plugins?: ChicPlugin[];
+};
 ```
 
 `buildChic` takes an optional configuration object, with two optional properties: `fixed` and `plugins`. `fixed` is an array of strings representing a fixed portion of styling; internally, this is how the `.fix()` function continues styles to the new instance. `plugins` is an array of plugin objects (as defined in the section below).
+
+> **NOTE:** It's generally not recommended to pass `fixed` values to the `buildChic` config object as compared to using the `.fix()` function. If you want to manually pass values to `fixed` while using `buildChic` anyway, make sure that each entry in the array matches the pattern `[cssProperty, cssValue]`
 
 #### Why would I want this?
 
@@ -182,4 +209,27 @@ The default `Chic` object installs certain plugins automatically. For smaller bu
 
 ### Plugins
 
-See [the plugins page] for more information
+> **NOTE:** Very experimental. May disappear at any time
+
+Plugins can be used to extend `Chic` functionality. Plugin objects can be assigned in the `plugins` param for `buildChic`:
+
+```javascript
+// loggers.js
+import { buildChic } from '@studiokeywi/chic';
+import somePlugin from './plugins/myPlugin.js';
+
+export const chic = buildChic({ plugins: [somePlugin] });
+```
+
+They can also be added to an existing instance after the fact:
+
+```javascript
+import { chic } from './loggers.js';
+import anotherPlugin from './plugins/anotherPlugin.js';
+
+chic.plugins.install(anotherPlugin);
+chic.plugins.doSomeThing(); // installed from `somePlugin`
+chic.plugins.doAnotherThing(); // installed from `anotherPlugin`
+```
+
+See [the plugins page] for more information.

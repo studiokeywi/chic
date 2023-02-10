@@ -1,5 +1,5 @@
-import { type Chic } from '../chic.js';
-import { type ChicPlugin } from './index.js';
+import type { Chic } from '../index.js';
+import type { ChicPlugin } from './index.js';
 
 /** Get image data from a source by drawing it to a canvas and converting the pixel data into `rgba(r, g, b, a)` strings
  * @param image */
@@ -15,8 +15,8 @@ const generateRGBAStrings = (drawFont: Chic, data: Uint8ClampedArray) => {
   }
   return hexStrs;
 };
-
-const install = (chic: Chic) => {
+// TODO: documentation
+const install = (chic: Chic): DrawImage => {
   // prettier-ignore
   const drawFont = chic
     .fontFamily.monospace
@@ -26,10 +26,9 @@ const install = (chic: Chic) => {
     .padding   ._0
     .fix();
   const drawStyle = drawFont();
-  // TODO: figure out how to apply intellisense from here to actual object, if possible
   /** Draws an image to the console, if it is drawable to an HTML Canvas
    * @param  image */
-  return (image: CanvasImageSource) => {
+  return image => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const { height, width } = parseDimensions(image);
@@ -61,4 +60,10 @@ const parseDimensions = (image: CanvasImageSource) => {
   return { height, width };
 };
 
+// TODO: documentation
 export default <ChicPlugin>{ id: 'drawImage', install };
+
+// TODO: documentation
+export interface DrawImage {
+  (image: CanvasImageSource): void;
+}

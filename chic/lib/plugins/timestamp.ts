@@ -1,30 +1,36 @@
-import { type Chic, type ChicLogger, type ChicLoggers } from '../chic.js';
-import { type ChicPlugin } from './index.js';
+import type { Chic, ChicLogger, ChicLoggers } from '../index.js';
+import type { ChicPlugin } from './index.js';
 
 // TODO: documentation
-const install = (chic: Chic) => {
+const install = (chic: Chic): Timestamp => {
+  // TODO: documentation
+  const makeLogger =
+    (format: (date: Date) => string, mode: keyof ChicLoggers, style: string): ChicLogger =>
+    (strs, ...styles) =>
+      chic[mode]([format(new Date()), ...strs], style, ...styles);
   const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
-  return ({ style = dateStyle } = <TimestampConfig>{ style: dateStyle }) =>
-    <ChicLoggers>{
-      debug: makeLogger(chic, 'debug', style),
-      error: makeLogger(chic, 'error', style),
-      group: makeLogger(chic, 'group', style),
-      groupCollapsed: makeLogger(chic, 'groupCollapsed', style),
-      groupEnd: chic.groupEnd.bind(chic),
-      info: makeLogger(chic, 'info', style),
-      log: makeLogger(chic, 'log', style),
-      warn: makeLogger(chic, 'warn', style),
-    };
+  // TODO: documentation
+  return ({ format = date => `[${date.toLocaleString()}]`, style = dateStyle } = {}) => ({
+    debug: makeLogger(format, 'debug', style),
+    error: makeLogger(format, 'error', style),
+    group: makeLogger(format, 'group', style),
+    groupCollapsed: makeLogger(format, 'groupCollapsed', style),
+    groupEnd: chic.groupEnd.bind(chic),
+    info: makeLogger(format, 'info', style),
+    log: makeLogger(format, 'log', style),
+    warn: makeLogger(format, 'warn', style),
+  });
 };
 
-// prettier-ignore
-const makeLogger = (chic: Chic, mode: keyof ChicLoggers, style: string): ChicLogger => (strs, ...styles) =>
-  chic[mode]([ts(), ...strs], style, ...styles);
-
-const ts = () => `[${new Date().toLocaleString()}]`;
-
+// TODO: documentation
 export default <ChicPlugin>{ id: 'timestamp', install };
 
+// TODO: documentation
+export interface Timestamp {
+  (config: TimestampConfig): ChicLoggers;
+}
+// TODO: documentation
 export type TimestampConfig = {
+  format?: (date: Date) => string;
   style?: string;
 };

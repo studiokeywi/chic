@@ -1,25 +1,15 @@
-let running;
 const install = (chic) => ({ check, labels = ["Event Occurred"], level = "log", repeat = false, styles = [""] }) => {
   const log = () => (chic[level](labels, ...styles), repeat && start());
-  const poll = () => {
-    const ready = check();
-    const result = (ready2) => (ready2 ? log : start)();
-    if (!(ready instanceof Promise))
-      return result(ready);
-    ready.then(result);
-  };
-  const start = () => {
-    if (running)
-      stop();
-    running = requestAnimationFrame(poll);
-  };
-  const stop = () => {
-    cancelAnimationFrame(running);
-  };
+  const poll = () => !((ready = check()) instanceof Promise) ? result(ready) : ready.then(result);
+  const result = (ready2) => (ready2 ? log : start)();
+  const start = () => void (running && stop(), running = requestAnimationFrame(poll));
+  const stop = () => void cancelAnimationFrame(running);
+  let ready = false;
+  let running;
   start();
-  return { start, stop };
+  return { start, stop, uninstall: stop };
 };
-var snoop_default = { id: "snoop", install, uninstall: () => cancelAnimationFrame(running) };
+var snoop_default = { id: "snoop", install };
 export {
   snoop_default as default
 };

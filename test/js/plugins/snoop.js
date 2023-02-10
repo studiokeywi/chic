@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic/build';
+import { buildChic } from '@studiokeywi/chic';
 import { snoop } from '@studiokeywi/chic/plugins';
 
 const _1s = 1e3;

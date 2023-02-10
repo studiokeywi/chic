@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic/build';
+import { buildChic } from '@studiokeywi/chic';
 import { labelMaker } from '@studiokeywi/chic/plugins';
 
 const chic = buildChic({ plugins: [labelMaker] });

@@ -1,18 +1,17 @@
 const install = (chic) => {
+  const makeLogger = (format, mode, style) => (strs, ...styles) => chic[mode]([format(new Date()), ...strs], style, ...styles);
   const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
-  return ({ style = dateStyle } = { style: dateStyle }) => ({
-    debug: makeLogger(chic, "debug", style),
-    error: makeLogger(chic, "error", style),
-    group: makeLogger(chic, "group", style),
-    groupCollapsed: makeLogger(chic, "groupCollapsed", style),
+  return ({ format = (date) => `[${date.toLocaleString()}]`, style = dateStyle } = {}) => ({
+    debug: makeLogger(format, "debug", style),
+    error: makeLogger(format, "error", style),
+    group: makeLogger(format, "group", style),
+    groupCollapsed: makeLogger(format, "groupCollapsed", style),
     groupEnd: chic.groupEnd.bind(chic),
-    info: makeLogger(chic, "info", style),
-    log: makeLogger(chic, "log", style),
-    warn: makeLogger(chic, "warn", style)
+    info: makeLogger(format, "info", style),
+    log: makeLogger(format, "log", style),
+    warn: makeLogger(format, "warn", style)
   });
 };
-const makeLogger = (chic, mode, style) => (strs, ...styles) => chic[mode]([ts(), ...strs], style, ...styles);
-const ts = () => `[${new Date().toLocaleString()}]`;
 var timestamp_default = { id: "timestamp", install };
 export {
   timestamp_default as default

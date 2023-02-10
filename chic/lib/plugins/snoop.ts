@@ -1,35 +1,33 @@
-import { ChicLoggers, type Chic } from '../chic.js';
-import { type ChicPlugin } from './index.js';
-
-let running: number;
+import { type Chic, type ChicLoggers } from '../index.js';
+import type { ChicPlugin } from './index.js';
 
 // TODO: documentation
-// prettier-ignore
-const install = (chic: Chic) => ({ check, labels = ['Event Occurred'], level = 'log', repeat = false, styles = [''] }: SnoopConfig) => {
+const install =
+  (chic: Chic): Snoop =>
+  ({ check, labels = ['Event Occurred'], level = 'log', repeat = false, styles = [''] }) => {
     const log = () => (chic[level](labels, ...styles), repeat && start());
-    const poll = () => {
-      const ready = check();
-      const result = (ready: boolean) => (ready ? log : start)();
-      if (!(ready instanceof Promise)) return result(ready);
-      ready.then(result);
-    };
-    const start = () => {
-      if (running) stop();
-      running = requestAnimationFrame(poll);
-    };
-    const stop = () => {
-      cancelAnimationFrame(running);
-    };
+    const poll = () => (!((ready = check()) instanceof Promise) ? result(ready) : ready.then(result));
+    const result = (ready: boolean) => (ready ? log : start)();
+    const start = () => void (running && stop(), (running = requestAnimationFrame(poll)));
+    const stop = () => void cancelAnimationFrame(running);
+    let ready: boolean | Promise<boolean> = false;
+    let running: number;
     start();
-    return { start, stop };
+    return { start, stop, uninstall: stop };
   };
-export default <ChicPlugin>{ id: 'snoop', install, uninstall: () => cancelAnimationFrame(running) };
 
+// TODO: documentation
+export default <ChicPlugin>{ id: 'snoop', install };
+
+// TODO: documentation
+export interface Snoop {
+  (config: SnoopConfig): { start: () => void; stop: () => void };
+}
+// TODO: documentation
 export type SnoopConfig = {
   check: (...args: any[]) => boolean | Promise<boolean>;
   labels?: string[];
   level?: keyof ChicLoggers;
-  rate?: number;
   repeat?: boolean;
   styles?: string[];
 };

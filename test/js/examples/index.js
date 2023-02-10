@@ -1,4 +1,4 @@
-import { buildChic } from '@studiokeywi/chic/build';
+import { buildChic } from '@studiokeywi/chic';
 import basics from './basics.js';
 import css from './css.js';
 import fix from './fix.js';
@@ -12,8 +12,7 @@ export const header = chic
 .borderRadius._2rem
 .color       .darkslategray
 .fontSize    ._1_25rem
-.padding     ._0_5rem
-  ();
+.padding     ._0_5rem();
 export const oneRem = '1rem';
 export const quoteExample = '"Fira Code", monospace';
 
