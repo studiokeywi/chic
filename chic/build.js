@@ -2,8 +2,8 @@ import esbuild from 'esbuild';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
-/** `/.+\.[^.]+$/` */
-const isFile = /.+\.[^.]+$/;
+/** `/[^.]*\.[^.]+$/` */
+const isFile = /[^.]*\.[^.]+$/;
 /** Uses `node:fs/promises.readdir` to recursively read all files in a directory
  * @param {string} root
  * @param {string[]} [files=[]] */

@@ -1,9 +1,9 @@
-import type { Chic } from '../index.js';
+import type { Chic } from './index.js';
 
-export { default as drawImage } from './drawImage.js';
-export { default as labelMaker } from './labelMaker.js';
-export { default as snoop } from './snoop.js';
-export { default as timestamp } from './timestamp.js';
+export { default as drawImage } from './plugins/drawImage.js';
+export { default as labelMaker } from './plugins/labelMaker.js';
+export { default as snoop } from './plugins/snoop.js';
+export { default as timestamp } from './plugins/timestamp.js';
 
 /** A plugin to modify or add new Chic behaviors */
 export type ChicPlugin = {

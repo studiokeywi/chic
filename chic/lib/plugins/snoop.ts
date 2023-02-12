@@ -1,5 +1,6 @@
-import { type Chic, type ChicLoggers } from '../index.js';
-import type { ChicPlugin } from './index.js';
+import { type Chic } from '../index.js';
+import type { ChicLoggers } from '../loggers.js';
+import type { ChicPlugin } from '../plugins.js';
 
 // TODO: documentation
 const install =

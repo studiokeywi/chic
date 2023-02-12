@@ -1,5 +1,5 @@
 import type { Chic } from '../index.js';
-import type { ChicPlugin } from './index.js';
+import type { ChicPlugin } from '../plugins.js';
 
 /** Get image data from a source by drawing it to a canvas and converting the pixel data into `rgba(r, g, b, a)` strings
  * @param image */

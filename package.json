@@ -1,10 +1,10 @@
 {
-  "workspaces": [
-    "chic",
-    "test"
-  ],
   "private": true,
   "scripts": {
     "dev": "npm run -w chic build:clean && npm run -w test dev"
-  }
+  },
+  "workspaces": [
+    "chic",
+    "test"
+  ]
 }

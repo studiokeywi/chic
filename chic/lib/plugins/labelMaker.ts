@@ -1,5 +1,6 @@
-import type { Chic, ChicLogger, ChicLoggers } from '../index.js';
-import type { ChicPlugin } from './index.js';
+import type { Chic } from '../index.js';
+import type { ChicLogger, ChicLoggers } from '../loggers.js';
+import type { ChicPlugin } from '../plugins.js';
 
 // TODO: documentation
 const install = (chic: Chic): LabelMaker => {
