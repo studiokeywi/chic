@@ -1,5 +1,5 @@
 const install = (chic) => {
-  const makeLogger = (format, mode, style) => (strs, ...styles) => chic[mode]([format(new Date()), ...strs], style, ...styles);
+  const makeLogger = (format, mode, style) => (strs, ...styles) => chic[mode]([format(/* @__PURE__ */ new Date()), ...strs], style, ...styles);
   const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
   return ({ format = (date) => `[${date.toLocaleString()}]`, style = dateStyle } = {}) => ({
     debug: makeLogger(format, "debug", style),
@@ -12,8 +12,8 @@ const install = (chic) => {
     warn: makeLogger(format, "warn", style)
   });
 };
-var timestamp_default = { id: "timestamp", install };
+const timestamp = { id: "timestamp", install };
 export {
-  timestamp_default as default
+  timestamp
 };
 //# sourceMappingURL=timestamp.js.map

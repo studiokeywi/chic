@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../lib/plugins/index.ts"],
+  "sourcesContent": ["export { drawImage } from './drawImage.js';\r\nexport { labelMaker } from './labelMaker.js';\r\nexport { snoop } from './snoop.js';\r\nexport { timestamp } from './timestamp.js';\r\n"],
+  "mappings": "AAAA,SAAS,iBAAiB;AAC1B,SAAS,kBAAkB;AAC3B,SAAS,aAAa;AACtB,SAAS,iBAAiB;",
+  "names": []
+}

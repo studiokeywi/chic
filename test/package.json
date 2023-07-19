@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@studiokeywi/chic": "^0.4.6"
+    "@studiokeywi/chic": "file:chic"
   },
   "devDependencies": {
     "vite": "^3.1.0"

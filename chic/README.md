@@ -1,6 +1,5 @@
 <!-- links -->
 
-[in the browser]: #browser-only
 [webpack]: https://webpackjs.org
 [rollup]: https://rollupjs.org
 [snowpack]: https://snowpack.dev/
@@ -11,6 +10,7 @@
 [`chalk`]: https://npmjs.org/package/chalk
 [css builder syntax]: #css-builder-syntax
 [fix]: #fixed-styles
+[inject]: #injecting-styles
 [the plugins page]: https://github.studiokeywi.dev/chic/blob/primary/chic/plugins.md
 
 <!--  -->
@@ -19,19 +19,29 @@
 
 `Chic` is a tiny assistant for helping make browser `console.log()` output prettier.
 
+The information on MDN about [styling console output] applies to browser-based uses. Attempting to use `Chic` in NodeJS will result in the styling being entirely stripped, due to the lack of CSS support. `Chic` is expected (but not guaranteed) to still output text to the console for NodeJS, but there are no attempts to convert potentially available CSS styles into console-compatible command sequences. If you need something to bring styling to your NodeJS console messages, consider [`chalk`].
+
+[![version](https://badgen.net/npm/v/@studiokeywi/chic)](https://badgen.net/npm/v/@studiokeywi/chic)
+[![license](https://badgen.net/npm/license/@studiokeywi/chic)](https://badgen.net/npm/license/@studiokeywi/chic)
+[![types](https://badgen.net/npm/types/@studiokeywi/chic)](https://badgen.net/npm/types/@studiokeywi/chic)
+[![publish size](https://badgen.net/packagephobia/publish/@studiokeywi/chic)](https://badgen.net/packagephobia/publish/@studiokeywi/chic)
+[![install size](https://badgen.net/packagephobia/install/@studiokeywi/chic)](https://badgen.net/packagephobia/install/@studiokeywi/chic)
+[![minzipped size](https://badgen.net/bundlephobia/minzip/@studiokeywi/chic)](https://badgen.net/bundlephobia/minzip/@studiokeywi/chic)
+[![Libraries.io dependency status for latest release, scoped npm package](https://img.shields.io/librariesio/release/npm/@studiokeywi/chic?style=for-the-badge)](https://img.shields.io/librariesio/release/npm/@studiokeywi/chic?style=for-the-badge)
+
 ## Getting Started
 
-`Chic` is meant to be used and viewed [in the browser], and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through GitHub and NPM, you can use one of the CDN URLs provided by [jsdelivr]:
+`Chic` is meant to be used and viewed in the browser, and so it is assumed that you will either be importing directly from a CDN or using a bundler (such as [webpack]/[rollup]/[snowpack]/[vite]/[esbuild]/...). The easiest way to get started is via CDN. Since `Chic` is publically available through NPM, you can use one of the CDN URLs provided by [jsdelivr]:
 
-`https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.js` (NPM mirror)  
-`https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/dist/index.js` (GitHub mirror)
+`https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.min.js`
 
 Example:
 
 ```html
 <script type="module">
-  import chic from 'https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.js';
-  // code where you would use chic below...
+  import { chic } from 'https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.min.js';
+
+  chic.log`Hello, World!${chic.fontSize._2rem()}`;
 </script>
 ```
 
@@ -42,24 +52,18 @@ If you are using a modern front end framework or bundler for front end, then you
 And then import it at the top of your file(s):
 
 ```javascript
-import chic from '@studiokeywi/chic';
-// code where you would use chic below...
+import { chic } from '@studiokeywi/chic';
+
+chic.log`Hello, World!${chic.fontSize._2rem()}`;
 ```
 
 If you want a preview without requiring a project to embed or install `Chic`, you can open up your browser's console and use the following snippet:
 
 ```javascript
-window.chic = (await import('https://cdn.jsdelivr.net/gh/studiokeywi/chic/chic/dist/index.js')).default;
-// code where you would use chic below...
+window.chic = (await import('https://cdn.jsdelivr.net/npm/@studiokeywi/chic/dist/index.min.js')).chic;
+
+chic.log`Hello, World!${chic.fontSize._2rem()}`;
 ```
-
-<h2 id="browser-only">Why Browser Only?</h2>
-
-This is due to the nature of browser-based console methods vs server-based (eg NodeJS) console methods. Following the information on MDN about [styling console output] in NodeJS will result in the styling being entirely stripped, due to the lack of CSS support.
-
-While `Chic` is expected (but not guaranteed) to still output text to the console for NodeJS, there are no attempts to convert potentially available CSS styles into console-compatible command sequences.
-
-If you need something to bring styling to your NodeJS console messages, we like [`chalk`].
 
 ## API
 
@@ -97,11 +101,11 @@ chic.log(['User: ', someUsername], chic['font-weight'].bolder.padding['1rem'](),
 
 <h3 id="css-builder-syntax">CSS Builder Syntax</h3>
 
-> **NOTE:** Firefox may offer different styling options than Chrome. I do not have access to Safari and cannot speak to the styling options there. See the list on MDN about [styling console output] for a list of potentially available CSS properties
+> **NOTE:** Different browsers may offer different styling options. See the list on MDN about [styling console output] for a list of potentially available CSS properties for your browser
 
-Behind the scenes, `Chic` uses a JavaScript Proxy object. This allows transformation of CSS-friendly strings when not using a logging function or the [fix] function.
+Behind the scenes, `Chic` uses a JavaScript Proxy object. This allows the use of object property access notations to be converted into CSS-friendly strings, while allowing access to dedicated `Chic` properties (eg logging functions, the [inject] and [fix] functions, or use of the `plugin` object).
 
-As seen above, the simples way to use this syntax is with simple text values that get mapped into alternating CSS properties and values (eg `chic.color.green()` results in `'color:green'`).
+As seen above, the simplest way to use this syntax is with simple text values. You can build up a new style string by alternating between CSS properties and values via property access on the `Chic` object, then executing a function. For instance, to build the style string `color: green;`, you can use `chic.color.green()`.
 
 Since CSS styles often require characters that are invalid in JavaScript identifiers, there are two options available. The first is to use bracket notation for property access (as used in previous examples):
 
@@ -177,6 +181,20 @@ Since `chic.fix()` returns a new `Chic` object, you can also use the return valu
 const infoStyle = chic.background.$c0c0c0.color.white.fix();
 const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue'].fix();
 infoBox.log`Something to know${infoBox()}`;
+```
+
+<h4 id="injecting-styles">Injecting Styles</h4>
+
+Sometimes, you may find yourself with several `Chic` styles that you may want to compose together. With the `chic.inject()` function, you can create new instances of `Chic` that merge together styles:
+
+```javascript
+const borderBox = chic.border['0.125rem solid blue']();
+const largeFont = chic.fontSize['2rem']();
+const smallFont = chic.fontSize['1rem']();
+const titleBox = chic.inject(borderBox).inject(largeFont)();
+const textBox = chic.inject(borderBox, smallFont)();
+chic.log`My Title${titleBox}
+My Text${textBox}`;
 ```
 
 ## Advanced

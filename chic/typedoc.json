@@ -1,0 +1,9 @@
+{
+  "disableSources": true,
+  "emit": "both",
+  "entryPoints": ["lib"],
+  "entryPointStrategy": "expand",
+  "excludeInternal": true,
+  "excludeNotDocumented": true,
+  "excludeReferences": true
+}

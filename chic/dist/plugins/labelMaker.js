@@ -21,8 +21,8 @@ const install = (chic) => {
     warn: makeLogger("warn", config.warn ?? defaults.warn)
   });
 };
-var labelMaker_default = { id: "labelMaker", install };
+const labelMaker = { id: "labelMaker", install };
 export {
-  labelMaker_default as default
+  labelMaker
 };
 //# sourceMappingURL=labelMaker.js.map

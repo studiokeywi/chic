@@ -5,9 +5,10 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "types",
+    "rootDir": "lib",
     "sourceMap": true,
+    "strict": true,
     "target": "ES2022"
   },
-  "exclude": ["iife.ts"],
-  "include": ["lib/**/*"]
+  "include": ["lib/**/*.ts", "types.d.ts"]
 }

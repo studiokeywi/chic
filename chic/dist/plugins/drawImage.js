@@ -1,6 +1,6 @@
 const generateRGBAStrings = (drawFont, data) => {
   const hexStrs = [];
-  let curPixel;
+  let curPixel = [];
   for (let idx = 0; idx < data.length; idx++) {
     if (!(idx % 4))
       curPixel = [];
@@ -37,7 +37,7 @@ const install = (chic) => {
   };
 };
 const parseDimensions = (image) => {
-  let { height, width } = image;
+  let { height = 0, width = 0 } = image;
   if (height instanceof SVGAnimatedLength)
     height = height.animVal.value;
   if (width instanceof SVGAnimatedLength)
@@ -46,8 +46,8 @@ const parseDimensions = (image) => {
     throw new TypeError("Image too large for Chic to render");
   return { height, width };
 };
-var drawImage_default = { id: "drawImage", install };
+const drawImage = { id: "drawImage", install };
 export {
-  drawImage_default as default
+  drawImage
 };
 //# sourceMappingURL=drawImage.js.map

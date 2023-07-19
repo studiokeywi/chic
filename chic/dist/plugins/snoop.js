@@ -1,4 +1,10 @@
-const install = (chic) => ({ check, labels = ["Event Occurred"], level = "log", repeat = false, styles = [""] }) => {
+const install = (chic) => ({
+  check,
+  labels = ["Event Occurred"],
+  level = "log",
+  repeat = false,
+  styles = [""]
+}) => {
   const log = () => (chic[level](labels, ...styles), repeat && start());
   const poll = () => !((ready = check()) instanceof Promise) ? result(ready) : ready.then(result);
   const result = (ready2) => (ready2 ? log : start)();
@@ -9,8 +15,8 @@ const install = (chic) => ({ check, labels = ["Event Occurred"], level = "log", 
   start();
   return { start, stop, uninstall: stop };
 };
-var snoop_default = { id: "snoop", install };
+const snoop = { id: "snoop", install };
 export {
-  snoop_default as default
+  snoop
 };
 //# sourceMappingURL=snoop.js.map

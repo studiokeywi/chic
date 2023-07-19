@@ -1,4 +1,4 @@
-const quoteFixer = (str) => (match) => str.match(new RegExp(match.replaceAll(rgxDashes, ""), "i"))[0];
+const quoteFixer = (str) => (match) => str.match(new RegExp(match.replaceAll(rgxDashes, ""), "i"))?.[0] ?? "";
 const rgxDashes = /-/g;
 const rgxHex = /\$/g;
 const rgxKebab = /(?=[A-Z])/;
@@ -19,4 +19,4 @@ const cssFormatter = (str) => {
 export {
   cssFormatter
 };
-//# sourceMappingURL=cssBuilder.js.map
+//# sourceMappingURL=css.js.map

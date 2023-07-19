@@ -9,7 +9,7 @@
 
 # Plugins
 
-## Interfaces
+## Interfaces and Types
 
 ### Plugin
 
@@ -40,7 +40,7 @@ The `uninstall` function is optional, but may be used to run additional cleanup 
 ```typescript
 /** Extra functionality provided by a Chic plugin */
 interface ChicPluginFunction {
-  <FN extends (...args: any[]) => any>(...args: Parameters<FN>): ReturnType<FN>;
+  <PluginFunction extends (...args: any[]) => any>(...args: Parameters<PluginFunction>): ReturnType<PluginFunction>;
   /** Optional cleanup function when uninstalled
    * @param chic The instance of Chic where this plugin was installed */
   uninstall?(chic: Chic): void;
@@ -125,3 +125,26 @@ export interface Timestamp {
 ## Examples
 
 All of the default plugins are available in the example library. See the [top level README] for more
+
+## Development
+
+Creating a plugin is as simple as following the type descriptions above, but there are additional features available to provide better IntelliSense during development.
+
+When writing your plugin, the following types are commonly used and can be imported from `@studiokeywi/chic` directly:
+
+- `Chic`
+- `ChicLogger`
+- `ChicLoggers`
+- `ChicPlugin`
+
+Additionally, you can augment the definition of the `ChicPlugins` interface so that your plugins will show up on an instance of `Chic` in your editor (eg `chic.plugins.yourPlugin`). Using TypeScript, simply include a `declare` block in your plugin file/type file that references the `ChicPlugins` interface, like this example from the `drawImage` plugin:
+
+```typescript
+declare module 'chic' {
+  interface ChicPlugins {
+    /** Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data.
+     * @internal */
+    drawImage: (image: CanvasImageSource): void;
+  }
+}
+```

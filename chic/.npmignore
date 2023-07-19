@@ -1,0 +1,8 @@
+*.md
+!LICENSE.md
+build.js
+docs
+iife.*
+node_modules/
+tsconfig.json
+typedoc.json

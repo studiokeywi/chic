@@ -1,7 +1,6 @@
-import type { Chic } from './index.js';
-
 /** Fixes issues with text in quotation marks being kebab-cased */
-const quoteFixer = (str: string) => (match: string) => str.match(new RegExp(match.replaceAll(rgxDashes, ''), 'i'))[0];
+const quoteFixer = (str: string) => (match: string) =>
+  str.match(new RegExp(match.replaceAll(rgxDashes, ''), 'i'))?.[0] ?? '';
 
 /** Used to unconvert kebab-case replacements inside quotes (e `font-family: "-fira-code"`) */
 const rgxDashes = /-/g;
@@ -19,9 +18,10 @@ const rgxSnake = /_/g;
 const rgxQuote = /"[^"]*?"/g;
 
 /** Converts special property syntax into valid CSS strings
+ * @internal
  * @param {string} str Special syntax string
  * @returns CSS style string */
-export const cssFormatter = (str: string) => {
+const cssFormatter = (str: string) => {
   const trimmedFront = str.replace(rgxLead, '');
   const replacedDollarSigns = trimmedFront.replaceAll(rgxHex, '#');
   const convertedNumberFormat = replacedDollarSigns.replaceAll(rgxNumber, '$1.$2');
@@ -32,8 +32,4 @@ export const cssFormatter = (str: string) => {
   return fixedQuotes;
 };
 
-/** Chic style builder proxy */
-export type ChicCSSBuilder = {
-  /** Append a new segment to the current style */
-  [css: string]: Chic;
-};
+export { cssFormatter };

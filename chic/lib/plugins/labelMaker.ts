@@ -1,9 +1,7 @@
-import type { Chic } from '../index.js';
-import type { ChicLogger, ChicLoggers } from '../loggers.js';
-import type { ChicPlugin } from '../plugins.js';
+import type { Chic, ChicLogger, ChicLoggers, ChicPlugin } from 'chic';
 
 // TODO: documentation
-const install = (chic: Chic): LabelMaker => {
+const install = (chic: Chic) => {
   // prettier-ignore
   const base = chic
     .border      .solid_0_125rem
@@ -28,7 +26,7 @@ const install = (chic: Chic): LabelMaker => {
       chic[mode]([label, ...strs], ...[style, ...styles]);
 
   // TODO: documentation
-  return (config = {}) => ({
+  return <LabelMaker>((config = {}) => ({
     debug: makeLogger('debug', config.debug ?? defaults.debug),
     error: makeLogger('error', config.error ?? defaults.error),
     group: makeLogger('group', config.group ?? defaults.group),
@@ -37,22 +35,24 @@ const install = (chic: Chic): LabelMaker => {
     info: makeLogger('info', config.info ?? defaults.info),
     log: makeLogger('log', config.log ?? defaults.log),
     warn: makeLogger('warn', config.warn ?? defaults.warn),
-  });
+  }));
 };
 
 // TODO: documentation
-export default <ChicPlugin>{ id: 'labelMaker', install };
+const labelMaker = <ChicPlugin>{ id: 'labelMaker', install };
 
-// TODO: documentation
+export { labelMaker };
+
+/** Configuration for a specific label for the `labelMaker` plugin */
 export type LabelConfig = {
   label: string;
   style: string;
 };
-// TODO: documentation
+/** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message. */
 export interface LabelMaker {
   (config: LabelMakerConfig): ChicLoggers;
 }
-// TODO: documentation
+/** Configuration for the `labelMaker` plugin */
 export type LabelMakerConfig = {
   debug?: LabelConfig;
   error?: LabelConfig;
@@ -62,3 +62,11 @@ export type LabelMakerConfig = {
   log?: LabelConfig;
   warn?: LabelConfig;
 };
+
+declare module 'chic' {
+  interface ChicPlugins {
+    /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message.
+     * @internal */
+    labelMaker: LabelMaker;
+  }
+}

@@ -1,56 +1,46 @@
-import { cssFormatter } from "./cssBuilder.js";
+import { cssFormatter } from "./css.js";
 import { buildLoggers } from "./loggers.js";
-import {
-  drawImage,
-  labelMaker,
-  snoop,
-  timestamp
-} from "./plugins.js";
+import { drawImage, labelMaker, snoop, timestamp } from "./plugins/index.js";
+const buildPlugins = (chic2) => ({
+  install: (plugin) => {
+    if (plugin.id in chic2.plugins)
+      return chic2.warn`Cannot overwrite an existing plugin`;
+    const pluginFn = plugin.install(chic2);
+    if (plugin.uninstall)
+      pluginFn.uninstall = plugin.uninstall;
+    chic2.plugins[plugin.id] = pluginFn;
+  },
+  uninstall: (id) => {
+    if (!(id in chic2.plugins))
+      return;
+    chic2.plugins[id]?.uninstall?.(chic2);
+    delete chic2.plugins[id];
+  }
+});
+const buildChicHandler = (styles) => ({
+  get(self, key, chic2) {
+    if ("symbol" === typeof key || key in self)
+      return Reflect.get(self, key, chic2);
+    const last = styles.at(-1);
+    const val = cssFormatter(key);
+    !styles.length || last.length > 1 ? styles.push([val]) : last.push(val);
+    return chic2;
+  }
+});
 const buildChic = ({ fixed = [], plugins = [] } = {}) => {
-  const chicHandler = {
-    get(self, key, chic2) {
-      if ("symbol" === typeof key || key in self)
-        return Reflect.get(self, key, chic2);
-      const last = styles.at(-1);
-      const val = cssFormatter(key);
-      !styles.length || last.length > 1 ? styles.push([val]) : last.push(val);
-      return chic2;
-    }
-  };
   const styles = [];
-  const buildStyle = () => useStyles(true).join(";");
-  const useStyles = (map = false) => {
-    const use = [...fixed, ...styles.splice(0, styles.length)];
-    return map ? use.map((style) => style.join(":")) : use;
-  };
-  const pluginObj = {
-    install: (plugin) => {
-      if (plugin.id in chic.plugins)
-        return chic.warn`Cannot overwrite an existing plugin`;
-      const pluginFn = /* @__PURE__ */ plugin.install(chic);
-      if (plugin.uninstall)
-        pluginFn.uninstall = plugin.uninstall;
-      chic.plugins[plugin.id] = pluginFn;
-    },
-    uninstall: (id) => {
-      if (!(id in chic.plugins))
-        return;
-      /* @__PURE__ */ chic.plugins[id]?.uninstall?.(chic);
-      delete chic.plugins[id];
-    }
-  };
-  const chicBase = {
-    .../* @__PURE__ */ buildLoggers(),
-    fix: () => buildChic({ fixed: useStyles() }),
-    plugins: pluginObj
-  };
-  const chic = new Proxy(Object.assign(buildStyle, chicBase), chicHandler);
-  plugins.forEach(chic.plugins.install);
-  return chic;
+  const buildStyle = () => [...fixed, ...styles.splice(0, styles.length)].map((style) => style.join(":")).join(";");
+  const fix = () => buildChic({ fixed: [...fixed, ...styles.splice(0, styles.length)] });
+  const inject = (...styleStrs) => (fixed.push(...styleStrs.flatMap((styles2) => styles2.split(";").map((style) => style.split(":")))), chic2);
+  const chicBase = { ...buildLoggers(), inject, fix };
+  const chic2 = new Proxy(Object.assign(buildStyle, chicBase), buildChicHandler(styles));
+  chic2.plugins = buildPlugins(chic2);
+  plugins.forEach(chic2.plugins.install);
+  return chic2;
 };
-var lib_default = /* @__PURE__ */ buildChic({ plugins: [drawImage, labelMaker, snoop, timestamp] });
+const chic = buildChic({ plugins: [drawImage, labelMaker, snoop, timestamp] });
 export {
   buildChic,
-  lib_default as default
+  chic
 };
 //# sourceMappingURL=index.js.map
