@@ -13,9 +13,9 @@ const generateRGBAStrings = (drawFont, data) => {
   return hexStrs;
 };
 const install = (chic) => {
-  const drawFont = chic.fontFamily.monospace.fontSize._10px.lineHeight._10px.margin._0.padding._0.fix();
+  const drawFont = chic.fontFamily.monospace.fontSize._8px.lineHeight._8px.margin._0.padding._0.fix();
   const drawStyle = drawFont();
-  return (image) => {
+  const drawImage2 = (image) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     const { height, width } = parseDimensions(image);
@@ -35,6 +35,7 @@ const install = (chic) => {
     }
     chic.log(text, ...styles);
   };
+  return drawImage2;
 };
 const parseDimensions = (image) => {
   let { height = 0, width = 0 } = image;

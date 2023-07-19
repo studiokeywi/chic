@@ -1,5 +1,6 @@
 import type { ChicLoggers } from 'chic';
-/** Chic logger methods
- * @internal */
+/** Create Chic logger methods
+ * @internal
+ * @returns {ChicLoggers} */
 declare const buildLoggers: () => ChicLoggers;
 export { buildLoggers };

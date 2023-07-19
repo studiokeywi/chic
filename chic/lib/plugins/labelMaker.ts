@@ -1,7 +1,11 @@
 import type { Chic, ChicLogger, ChicLoggers, ChicPlugin } from 'chic';
+import { ChicPluginFunction } from 'chic';
 
-// TODO: documentation
-const install = (chic: Chic) => {
+/** Installer the `labelMaker` plugin. Not intended to be used directly
+ * @internal
+ * @param {Chic} chic
+ * @returns {LabelMaker} */
+const install: ChicPlugin<LabelMaker>['install'] = (chic: Chic): LabelMaker => {
   // prettier-ignore
   const base = chic
     .border      .solid_0_125rem
@@ -19,14 +23,15 @@ const install = (chic: Chic) => {
     log: { label: 'LOG', style: base.borderColor.green.color.green() },
     warn: { label: 'WARN', style: base.borderColor.yellow.color.yellow() },
   };
-  // TODO: documentation
   const makeLogger =
     (mode: keyof ChicLoggers, { label, style }: LabelConfig): ChicLogger =>
     (strs, ...styles) =>
       chic[mode]([label, ...strs], ...[style, ...styles]);
 
-  // TODO: documentation
-  return <LabelMaker>((config = {}) => ({
+  /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message.
+   * @param {LabelMakerConfig} config
+   * @returns {ChicLoggers} */
+  const labelMaker = <LabelMaker>((config: LabelMakerConfig = {}) => ({
     debug: makeLogger('debug', config.debug ?? defaults.debug),
     error: makeLogger('error', config.error ?? defaults.error),
     group: makeLogger('group', config.group ?? defaults.group),
@@ -36,10 +41,12 @@ const install = (chic: Chic) => {
     log: makeLogger('log', config.log ?? defaults.log),
     warn: makeLogger('warn', config.warn ?? defaults.warn),
   }));
+
+  return labelMaker;
 };
 
-// TODO: documentation
-const labelMaker = <ChicPlugin>{ id: 'labelMaker', install };
+/** Installer object for the `labelMaker` plugin */
+const labelMaker: ChicPlugin<LabelMaker> = { id: 'labelMaker', install };
 
 export { labelMaker };
 
@@ -49,7 +56,10 @@ export type LabelConfig = {
   style: string;
 };
 /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message. */
-export interface LabelMaker {
+export interface LabelMaker extends ChicPluginFunction {
+  /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message.
+   * @param {LabelMakerConfig} config
+   * @returns {ChicLoggers} */
   (config: LabelMakerConfig): ChicLoggers;
 }
 /** Configuration for the `labelMaker` plugin */

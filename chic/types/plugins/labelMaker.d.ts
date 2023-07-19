@@ -1,5 +1,7 @@
 import type { ChicLoggers, ChicPlugin } from 'chic';
-declare const labelMaker: ChicPlugin;
+import { ChicPluginFunction } from 'chic';
+/** Installer object for the `labelMaker` plugin */
+declare const labelMaker: ChicPlugin<LabelMaker>;
 export { labelMaker };
 /** Configuration for a specific label for the `labelMaker` plugin */
 export type LabelConfig = {
@@ -7,7 +9,10 @@ export type LabelConfig = {
     style: string;
 };
 /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message. */
-export interface LabelMaker {
+export interface LabelMaker extends ChicPluginFunction {
+    /** Creates a set of `Chic` loggers that automatically prepend a styled label before the provided message.
+     * @param {LabelMakerConfig} config
+     * @returns {ChicLoggers} */
     (config: LabelMakerConfig): ChicLoggers;
 }
 /** Configuration for the `labelMaker` plugin */

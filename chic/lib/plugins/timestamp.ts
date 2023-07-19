@@ -1,15 +1,23 @@
 import type { Chic, ChicLogger, ChicLoggers, ChicPlugin } from 'chic';
+import { ChicPluginFunction } from 'chic';
 
-// TODO: documentation
-const install = (chic: Chic) => {
-  // TODO: documentation
+/** Installer the `timestamp` plugin. Not intended to be used directly
+ * @internal
+ * @param {Chic} chic
+ * @returns {Timestamp} */
+const install: ChicPlugin<Timestamp>['install'] = (chic: Chic): Timestamp => {
   const makeLogger =
     (format: (date: Date) => string, mode: keyof ChicLoggers, style: string): ChicLogger =>
     (strs, ...styles) =>
       chic[mode]([format(new Date()), ...strs], style, ...styles);
   const dateStyle = chic.fontStyle.italic.marginRight._0_5rem();
-  // TODO: documentation
-  return <Timestamp>(({ format = date => `[${date.toLocaleString()}]`, style = dateStyle } = {}) => ({
+  /** Creates a set of `Chic` loggers that automatically prepend a styleable timestamp before the provided message
+   * @param {TimestampConfig} config
+   * @returns {ChicLoggers} */
+  const timestamp = <Timestamp>(({
+    format = (date: Date) => `[${date.toLocaleString()}]`,
+    style = dateStyle,
+  } = {}) => ({
     debug: makeLogger(format, 'debug', style),
     error: makeLogger(format, 'error', style),
     group: makeLogger(format, 'group', style),
@@ -19,15 +27,20 @@ const install = (chic: Chic) => {
     log: makeLogger(format, 'log', style),
     warn: makeLogger(format, 'warn', style),
   }));
+
+  return timestamp;
 };
 
-// TODO: documentation
-const timestamp = <ChicPlugin>{ id: 'timestamp', install };
+/** Installer object for the `timestamp` plugin */
+const timestamp: ChicPlugin<Timestamp> = { id: 'timestamp', install };
 
 export { timestamp };
 
 /** Creates a set of `Chic` loggers that automatically prepend a styleable timestamp before the provided message */
-export interface Timestamp {
+export interface Timestamp extends ChicPluginFunction {
+  /** Creates a set of `Chic` loggers that automatically prepend a styleable timestamp before the provided message
+   * @param {TimestampConfig} config
+   * @returns {ChicLoggers} */
   (config: TimestampConfig): ChicLoggers;
 }
 /** Configuration for the `timestamp` plugin */

@@ -31,14 +31,20 @@ const buildChic = ({ fixed = [], plugins = [] } = {}) => {
   const styles = [];
   const buildStyle = () => [...fixed, ...styles.splice(0, styles.length)].map((style) => style.join(":")).join(";");
   const fix = () => buildChic({ fixed: [...fixed, ...styles.splice(0, styles.length)] });
-  const inject = (...styleStrs) => (fixed.push(...styleStrs.flatMap((styles2) => styles2.split(";").map((style) => style.split(":")))), chic2);
+  const inject = (...styleStrs) => buildChic({
+    fixed: [
+      ...fixed,
+      ...styles.splice(0, styles.length),
+      ...styleStrs.flatMap((styles2) => styles2.split(";").map((style) => style.split(":")))
+    ]
+  });
   const chicBase = { ...buildLoggers(), inject, fix };
   const chic2 = new Proxy(Object.assign(buildStyle, chicBase), buildChicHandler(styles));
   chic2.plugins = buildPlugins(chic2);
   plugins.forEach(chic2.plugins.install);
   return chic2;
 };
-const chic = buildChic({ plugins: [drawImage, labelMaker, snoop, timestamp] });
+const chic = /* @__PURE__ */ buildChic({ plugins: [drawImage, labelMaker, snoop, timestamp] });
 export {
   buildChic,
   chic

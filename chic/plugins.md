@@ -60,7 +60,7 @@ The default `Chic` object automatically builds with the following plugins: `draw
 Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data.
 
 ```typescript
-interface DrawImage {
+interface DrawImage extends ChicPluginFunction {
   (image: CanvasImageSource): void;
 }
 ```
@@ -84,7 +84,7 @@ type LabelMakerConfig = {
   log?: LabelConfig = { label: 'LOG', style: base.borderColor.green.color.green() };
   warn?: LabelConfig = { label: 'WARN', style: base.borderColor.yellow.color.yellow() };
 };
-interface LabelMaker {
+interface LabelMaker extends ChicPluginFunction {
   (config: LabelMakerConfig): ChicLoggers;
 }
 ```
@@ -103,7 +103,7 @@ type SnoopConfig = {
   repeat?: boolean = false;
   styles?: string[] = [''];
 };
-interface Snoop {
+interface Snoop extends ChicPluginFunction {
   (config: SnoopConfig): { start: () => void; stop: () => void };
 }
 ```
@@ -113,11 +113,11 @@ interface Snoop {
 Creates a set of `Chic` loggers that automatically prepend a styleable timestamp before the provided message.
 
 ```typescript
-export type TimestampConfig = {
+type TimestampConfig = {
   format?: (date: Date) => string = (date: Date) => `[${date.toLocaleString()}]`;
   style?: string = chic.fontStyle.italic.marginRight._0_5rem();
 };
-export interface Timestamp {
+interface Timestamp extends ChicPluginFunction {
   (config: TimestampConfig): ChicLoggers;
 }
 ```
@@ -140,11 +140,15 @@ When writing your plugin, the following types are commonly used and can be impor
 Additionally, you can augment the definition of the `ChicPlugins` interface so that your plugins will show up on an instance of `Chic` in your editor (eg `chic.plugins.yourPlugin`). Using TypeScript, simply include a `declare` block in your plugin file/type file that references the `ChicPlugins` interface, like this example from the `drawImage` plugin:
 
 ```typescript
+interface DrawImage extends ChicPluginFunction {
+  (image: CanvasImageSource): void;
+}
+
 declare module 'chic' {
   interface ChicPlugins {
     /** Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data.
      * @internal */
-    drawImage: (image: CanvasImageSource): void;
+    drawImage: DrawImage;
   }
 }
 ```

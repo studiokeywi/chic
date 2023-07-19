@@ -9,4 +9,6 @@ export default () => {
   const textBox = chic.inject(borderBox, smallFont)();
   chic.log`My Title${titleBox}
 My Text${textBox}`;
+  const boxLog = chic.inject(borderBox, largeFont);
+  boxLog.log`Another Title${boxLog()}`;
 };

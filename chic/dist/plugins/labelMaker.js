@@ -10,7 +10,7 @@ const install = (chic) => {
     warn: { label: "WARN", style: base.borderColor.yellow.color.yellow() }
   };
   const makeLogger = (mode, { label, style }) => (strs, ...styles) => chic[mode]([label, ...strs], ...[style, ...styles]);
-  return (config = {}) => ({
+  const labelMaker2 = (config = {}) => ({
     debug: makeLogger("debug", config.debug ?? defaults.debug),
     error: makeLogger("error", config.error ?? defaults.error),
     group: makeLogger("group", config.group ?? defaults.group),
@@ -20,6 +20,7 @@ const install = (chic) => {
     log: makeLogger("log", config.log ?? defaults.log),
     warn: makeLogger("warn", config.warn ?? defaults.warn)
   });
+  return labelMaker2;
 };
 const labelMaker = { id: "labelMaker", install };
 export {

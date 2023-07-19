@@ -175,14 +175,6 @@ const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue']();
 chic.log`Something to know${infoBox}`;
 ```
 
-Since `chic.fix()` returns a new `Chic` object, you can also use the return value as a logger itself; just don't forget to pass in the styles -- `Chic` will persist your fixed styles when creating new styles, but not when logging:
-
-```javascript
-const infoStyle = chic.background.$c0c0c0.color.white.fix();
-const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue'].fix();
-infoBox.log`Something to know${infoBox()}`;
-```
-
 <h4 id="injecting-styles">Injecting Styles</h4>
 
 Sometimes, you may find yourself with several `Chic` styles that you may want to compose together. With the `chic.inject()` function, you can create new instances of `Chic` that merge together styles:
@@ -195,6 +187,21 @@ const titleBox = chic.inject(borderBox).inject(largeFont)();
 const textBox = chic.inject(borderBox, smallFont)();
 chic.log`My Title${titleBox}
 My Text${textBox}`;
+```
+
+#### Note About Fixing/Injecting Styles
+
+Since `chic.fix()` and `chic.inject()` return a new `Chic` object, you can also use the return value as a logger itself; just don't forget to pass in the styles -- `Chic` will persist your fixed styles when creating new style strings, but does not know when to use them for logging:
+
+```javascript
+const infoStyle = chic.background.$c0c0c0.color.white.fix();
+const infoBox = infoStyle.padding['1rem'].border['0.125rem solid blue'].fix();
+infoBox.log`Something to know${infoBox()}`;
+
+const borderBox = chic.border['0.125rem solid blue']();
+const largeFont = chic.fontSize['2rem']();
+const boxLog = chic.inject(borderBox, largeFont);
+boxLog.log`Another Title${boxLog()}`;
 ```
 
 ## Advanced
@@ -227,7 +234,7 @@ The default `Chic` object installs certain plugins automatically. For smaller bu
 
 ### Plugins
 
-> **NOTE:** Very experimental. May disappear at any time
+> **NOTE:** Experimental. May disappear at any time
 
 Plugins can be used to extend `Chic` functionality. Plugin objects can be assigned in the `plugins` param for `buildChic`:
 

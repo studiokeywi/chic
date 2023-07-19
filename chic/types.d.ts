@@ -14,12 +14,18 @@ declare module 'chic' {
   } & ChicCSSBuilder &
     ChicLoggers;
 
+  /** Chic style builder proxy */
+  export type ChicCSSBuilder = {
+    /** Append a new segment to the current style */
+    [css: string]: Chic;
+  };
+
   /** Configuration for building Chic instances */
   export type ChicConfig = {
     /** Fixed styles to always apply when building style strings */
     fixed?: string[][];
     /** Plugins to extend Chic functionality */
-    plugins?: ChicPlugin[];
+    plugins?: ChicPlugin<ChicPluginFunction>[];
   };
 
   /** Shape of a Chic logger function */
@@ -97,13 +103,16 @@ declare module 'chic' {
     warn(strs: TemplateStringsArray, ...styles: string[]): void;
   };
 
+  /** Names of available Chic logging functions */
+  export type ChicModes = keyof ChicLoggers;
+
   /** A plugin to modify or add new Chic behaviors */
-  export type ChicPlugin = {
+  export type ChicPlugin<Plugin extends ChicPluginFunction> = {
     /** Identifier for plugin's exported function */
     id: string;
     /** The installer function for this plugin
      * @param chic The instance of Chic where this plugin is installed */
-    install(chic: Chic): ChicPluginFunction;
+    install(chic: Chic): Plugin;
     /** Optional cleanup function when uninstalled
      * @param chic The instance of Chic where this plugin was installed */
     uninstall?(chic: Chic): void;
@@ -112,7 +121,7 @@ declare module 'chic' {
   /** Extra functionality provided by a Chic plugin */
   export interface ChicPlugins {
     /** Install a new plugin into Chic */
-    install(plugin: ChicPlugin): void;
+    install<Plugin extends ChicPluginFunction>(plugin: ChicPlugin<Plugin>): void;
     /** Uninstall a plugin from Chic */
     uninstall(id: string): void;
   }
@@ -124,10 +133,4 @@ declare module 'chic' {
      * @param chic The instance of Chic where this plugin was installed */
     uninstall?(chic: Chic): void;
   }
-
-  /** Chic style builder proxy */
-  export type ChicCSSBuilder = {
-    /** Append a new segment to the current style */
-    [css: string]: Chic;
-  };
 }

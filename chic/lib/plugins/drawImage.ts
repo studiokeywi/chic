@@ -1,8 +1,9 @@
-import type { Chic, ChicPlugin } from 'chic';
+import type { Chic, ChicPlugin, ChicPluginFunction } from 'chic';
 
 /** Get image data from a source by drawing it to a canvas and converting the pixel data into `rgba(r, g, b, a)` strings
- * @param image */
-const generateRGBAStrings = (drawFont: Chic, data: Uint8ClampedArray) => {
+ * @param image
+ * @returns {string[]} */
+const generateRGBAStrings = (drawFont: Chic, data: Uint8ClampedArray): string[] => {
   const hexStrs: string[] = [];
   let curPixel: number[] = [];
   for (let idx = 0; idx < data.length; idx++) {
@@ -14,19 +15,24 @@ const generateRGBAStrings = (drawFont: Chic, data: Uint8ClampedArray) => {
   }
   return hexStrs;
 };
-// TODO: documentation
-const install = (chic: Chic) => {
+/** Installer the `drawImage` plugin. Not intended to be used directly
+ * @internal
+ * @param {Chic} chic
+ * @returns {DrawImage} */
+const install: ChicPlugin<DrawImage>['install'] = (chic: Chic): DrawImage => {
   // prettier-ignore
   const drawFont = chic
     .fontFamily.monospace
-    .fontSize  ._10px
-    .lineHeight._10px
+    .fontSize  ._8px
+    .lineHeight._8px
     .margin    ._0
     .padding   ._0
     .fix();
   const drawStyle = drawFont();
-  /** Draws an image to the console, if it is drawable to an HTML Canvas */
-  return <DrawImage>(image => {
+
+  /** Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data.
+   * @param image */
+  const drawImage = <DrawImage>((image: CanvasImageSource) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     const { height, width } = parseDimensions(image);
@@ -46,6 +52,8 @@ const install = (chic: Chic) => {
     }
     chic.log(text, ...styles);
   });
+
+  return drawImage;
 };
 
 /** Get the height and width values as numbers from a CanvasImageSource
@@ -60,13 +68,15 @@ const parseDimensions = (
   return { height, width };
 };
 
-// TODO: documentation
-const drawImage = <ChicPlugin>{ id: 'drawImage', install };
+/** Installer object for the `drawImage` plugin */
+const drawImage: ChicPlugin<DrawImage> = { id: 'drawImage', install };
 
 export { drawImage };
 
 /** Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data. */
-export interface DrawImage {
+export interface DrawImage extends ChicPluginFunction {
+  /** Draws an image to the console. Works best with small pixel artwork no larger than 256 x 256 (or approximately 65,536 pixels). Internally uses an `HTMLCanvasElement` to obtain pixel color data.
+   * @param image */
   (image: CanvasImageSource): void;
 }
 
